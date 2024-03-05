@@ -1,4 +1,4 @@
-version: '3.1'
+version: '3.9'
 
 services:
 
@@ -18,21 +18,23 @@ services:
       - FLASK_PORT=5000
       - FLASK_APP=app
     depends_on:
-      - msvc-db
+      msvc-db:
+        condition: service_healthy
 
   msvc-db:
     image: mysql:5.7
+    container_name: msvc-db
     restart: always
     environment:
-      MYSQL_DATABASE: msvc
-      MYSQL_USER: user
-      MYSQL_PASSWORD: u_pwd
       MYSQL_ROOT_PASSWORD: root
-    container_name: msvc-db
+    healthcheck:
+      test: mysqladmin ping -h localhost -uroot --password=$$MYSQL_ROOT_PASSWORD
+      start_period: 2s
+      interval: 5s
+      timeout: 5s
+      retries: 55
     ports:
       - 3306:3306
-    expose:
-      - 3306
     volumes:
       - my-db:/var/lib/mysql
 
