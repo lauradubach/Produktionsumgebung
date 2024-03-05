@@ -14,15 +14,30 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
+######
+# Data Models
 
+
+# für SQL Alchemy (table definition)
 class StudentModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(32))
     level = db.Column(db.String(8))
 
+# für APIFlask (Input, Output Schemata)
+class StudentIn(Schema):
+    name = String(required=True, validate=Length(0, 32))
+    level = String(required=True, validate=OneOf(['HF', 'PE', 'AP', 'ICT']))
 
+class StudentOut(Schema):
+    id = Integer()
+    name = String()
+    level = String()
+
+
+# Hilfsfunktion (Testdaten erstellen, Tabellen erstellen)
 def init_database():
-    db.drop_all()
+    db.drop_all() # dieser Befehl löscht alle vorhandenen Datenbankeintraege und Tabellen
     db.create_all()
 
     students = [
@@ -35,17 +50,6 @@ def init_database():
         student = StudentModel(**student_data)
         db.session.add(student)
     db.session.commit()
-
-
-class StudentIn(Schema):
-    name = String(required=True, validate=Length(0, 10))
-    level = String(required=True, validate=OneOf(['HF', 'PE', 'AP', 'ICT']))
-
-
-class StudentOut(Schema):
-    id = Integer()
-    name = String()
-    level = String()
 
 
 @app.get('/')
