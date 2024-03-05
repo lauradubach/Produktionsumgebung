@@ -14,10 +14,11 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
+
 ######
 # Data Models
 
-
+# helper table für many to many relation
 student_course_association = db.Table(
     'student_course',
     db.Column('student_id', db.Integer, db.ForeignKey('courses.id')),
@@ -57,8 +58,8 @@ class StudentOut(Schema):
     name = String()
     level = String()
 
-
-
+class RegistrationIn(Schema):
+    course_id = Integer()
 
 
 # Hilfsfunktion (Testdaten erstellen, Tabellen erstellen)
@@ -66,6 +67,7 @@ def init_database():
     db.drop_all() # dieser Befehl löscht alle vorhandenen Datenbankeintraege und Tabellen
     db.create_all()
 
+    # Beispieldaten
     students = [
         {'name': 'Freda Kids', 'level': 'HF'},
         {'name': 'Sam Sung', 'level': 'HF'},
@@ -89,7 +91,7 @@ def init_database():
 
 @app.get('/')
 def say_hello():
-    return {'message': 'Hello!'}
+    return {'message': 'Hello- I am a complex SQLAlchemy Example with APIFlask!'}
 
 
 @app.get('/students/<int:student_id>')
@@ -132,6 +134,28 @@ def delete_student(student_id):
     db.session.delete(student)
     db.session.commit()
     return ''
+
+
+# register a student with a course
+@app.post('/students/<int:student_id>/courses')
+@app.input(RegistrationIn, location='json')
+@app.output(StudentOut, status_code=201)
+def register_student(student_id, json_data):
+    student = db.get_or_404(StudentModel, student_id)
+    course = db.get_or_404(CourseModel, json_data.get('course_id'))
+    student.courses.append(course)
+    course.students.append(student)
+    db.session.commit()
+    return student
+
+
+# get all courses of a student
+@app.get('/students/<int:student_id>/courses')
+@app.output(CourseOut(many=True))
+def get_student_courses(student_id):
+    student = db.get_or_404(StudentModel, student_id)
+    courses = student.courses
+    return courses
 
 
 with app.app_context():
