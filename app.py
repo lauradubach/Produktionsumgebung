@@ -1,5 +1,5 @@
 from apiflask import APIFlask, Schema
-from apiflask.fields import Integer, String
+from apiflask.fields import Integer, String, Nested
 from apiflask.validators import Length, OneOf
 from flask_sqlalchemy import SQLAlchemy
 import os
@@ -18,13 +18,36 @@ db = SQLAlchemy(app)
 # Data Models
 
 
+student_course_association = db.Table(
+    'student_course',
+    db.Column('student_id', db.Integer, db.ForeignKey('courses.id')),
+    db.Column('course_id', db.Integer, db.ForeignKey('students.id'))
+)
+
 # für SQL Alchemy (table definition)
+
+## course DB Schema und In/Out Schemas
+class CourseModel(db.Model):
+    __tablename__ = 'courses'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(8))
+    students = db.relationship('StudentModel', secondary=student_course_association, back_populates='courses') 
+
+class CourseIn(Schema):
+    title = String(required=True, validate=Length(0, 32))
+   
+class CourseOut(Schema):
+    id = Integer()
+    title = String()
+
+## student DB Schema und In/Out Schemas
 class StudentModel(db.Model):
+    __tablename__ = 'students'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(32))
     level = db.Column(db.String(8))
+    courses = db.relationship('CourseModel', secondary=student_course_association, back_populates='students') 
 
-# für APIFlask (Input, Output Schemata)
 class StudentIn(Schema):
     name = String(required=True, validate=Length(0, 32))
     level = String(required=True, validate=OneOf(['HF', 'PE', 'AP', 'ICT']))
@@ -33,6 +56,9 @@ class StudentOut(Schema):
     id = Integer()
     name = String()
     level = String()
+
+
+
 
 
 # Hilfsfunktion (Testdaten erstellen, Tabellen erstellen)
@@ -49,6 +75,15 @@ def init_database():
     for student_data in students:
         student = StudentModel(**student_data)
         db.session.add(student)
+
+    courses = [
+        {'title': 'M321'},
+        {'title': 'M123'}
+    ]
+    for course_data in courses:
+        course = CourseModel(**course_data)
+        db.session.add(course)
+
     db.session.commit()
 
 
