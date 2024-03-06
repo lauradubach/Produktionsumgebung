@@ -27,6 +27,7 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: msvc
     healthcheck:
       test: mysqladmin ping -h localhost -uroot --password=$$MYSQL_ROOT_PASSWORD
       start_period: 2s
