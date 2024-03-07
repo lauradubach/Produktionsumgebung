@@ -1,5 +1,5 @@
 from apiflask import APIFlask, Schema
-from apiflask.fields import Integer, String, Nested
+from apiflask.fields import Integer, String
 from apiflask.validators import Length, OneOf
 from flask_sqlalchemy import SQLAlchemy
 import os
@@ -18,7 +18,7 @@ db = SQLAlchemy(app)
 ######
 # Data Models
 
-# helper table für many to many relation
+# Hilfstabelle für many to many Relation
 student_course_association = db.Table(
     'student_course',
     db.Column('student_id', db.Integer, db.ForeignKey('courses.id')),
@@ -91,7 +91,7 @@ def init_database():
 
 @app.get('/')
 def say_hello():
-    return {'message': 'Hello- I am a complex SQLAlchemy Example with APIFlask!'}
+    return {'message': 'Hello - I am a complex SQLAlchemy Example with APIFlask!'}
 
 
 @app.get('/students/<int:student_id>')
