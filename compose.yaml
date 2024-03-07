@@ -2,8 +2,8 @@ version: '3.9'
 
 services:
 
-  persistent-flask:
-    container_name: persistent_flask_service
+  msvc-bp-dev-api:
+    container_name: msvc-bp-dev-api
     build:
       context: .
     ports:
@@ -11,23 +11,23 @@ services:
     volumes:
       - .:/app
     environment:
-      - DATABASE_URI=mysql+mysqlconnector://root:root@msvc-db:3306/msvc
+      - DATABASE_URI=mysql+mysqlconnector://root:root@msvc-bp-dev-db:3306/msvc-bp-dev
       - CHOKIDAR_USEPOLLING=true
       - FLASK_DEBUG=1
       - FLASK_HOST=0.0.0.0
       - FLASK_PORT=5000
       - FLASK_APP=app
     depends_on:
-      msvc-db:
+      msvc-bp-dev-db:
         condition: service_healthy
 
-  msvc-db:
+  msvc-bp-dev-db:
     image: mysql:5.7
-    container_name: msvc-db
+    container_name: msvc-bp-dev-db
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: msvc
+      MYSQL_DATABASE: msvc-bp-dev
     healthcheck:
       test: mysqladmin ping -h localhost -uroot --password=$$MYSQL_ROOT_PASSWORD
       start_period: 2s
@@ -37,7 +37,7 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - my-db:/var/lib/mysql
+      - vol-msvc-dev-db:/var/lib/mysql
 
 volumes:
-  my-db:
+  vol-msvc-dev-db:

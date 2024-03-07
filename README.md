@@ -1,4 +1,4 @@
-# Microservices - Flask mit Datenbank
+# Microservices - Skalierbare Strukturen
 
 ## Technologien
 
@@ -10,12 +10,13 @@
 
 ## Zweck
 
-Dies ist eine Beispielapplikation für einen dockerized Flask-Server mit einer Anbindung an eine SQL Datenbank.
+Dies ist eine Beispielapplikation für einen dockerized Flask-Server mit einer erweiterbaren Struktur.
 
-Es sollen Konzepte demonstriert werden, mit denen man Persistenz in Microservices herstellen kann.
+Es sollen Konzepte demonstriert werden, mit denen man über Flask Blueprints und einer best-practice File-Struktur einen erweiterbaren Microservices erstellen kann.
 
 Der Source Code ist ausschliesslich für Entwicklungszwecke gedacht.
 
+Die abgeleitete Struktur wurde inspiriert von diesem [Digital Ocean Blog](https://www.digitalocean.com/community/tutorials/how-to-structure-a-large-flask-application-with-flask-blueprints-and-flask-sqlalchemy)
 
 ## Funktionen
 
