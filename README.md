@@ -22,7 +22,9 @@ Die abgeleitete Struktur wurde inspiriert von diesem [Digital Ocean Blog](https:
 
 - Studenten und Kurse mit CRUD verwalten
 - Studenten auf Kurse registrieren
+- Kurse mit Studenten verknüpfen
 - Alle Studenten eines Kurses anzeigen
+- Alle Kurse eines Studenten anzeigen
 
 ## Installation
 
