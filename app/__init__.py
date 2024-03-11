@@ -2,8 +2,6 @@ from apiflask import APIFlask
 
 from config import Config
 from app.extensions import db
-from app.models.test_data import create_test_data
-
 
 
 
@@ -16,7 +14,6 @@ def create_app(config_class=Config):
         
     with app.app_context():
         db.create_all()
-        create_test_data()  ## remove this command when not testing
 
     # Register blueprints here
     from app.students import bp as students_bp

@@ -1,4 +1,4 @@
-# Microservices - Skalierbare Strukturen
+# Microservices - Produktionsumgebung
 
 ## Technologien
 
@@ -7,16 +7,17 @@
 - SQLAlchemy (https://www.sqlalchemy.org/)
 - mySQL (https://www.mysql.com/de/)
 - Docker Compose (https://docs.docker.com/compose/)
+- pyTest (https://docs.pytest.org/en/8.0.x/)
+- Gunicorn (https://gunicorn.org/)
 
 ## Zweck
 
-Dies ist eine Beispielapplikation für einen dockerized Flask-Server mit einer erweiterbaren Struktur.
+Dies ist eine Beispielapplikation für einen dockerized Flask-Server mit einer Dev und einer Prod Variante.
 
-Es sollen Konzepte demonstriert werden, mit denen man über Flask Blueprints und einer best-practice File-Struktur einen erweiterbaren Microservices erstellen kann.
+Es sollen Konzepte demonstriert werden, mit denen man von einer Entwicklungsumgebung einfach auf eine Produktionsumgebung wechseln kann.
 
 Der Source Code ist ausschliesslich für Entwicklungszwecke gedacht.
 
-Die abgeleitete Struktur wurde inspiriert von diesem [Digital Ocean Blog](https://www.digitalocean.com/community/tutorials/how-to-structure-a-large-flask-application-with-flask-blueprints-and-flask-sqlalchemy)
 
 ## Funktionen
 
@@ -30,11 +31,26 @@ Die abgeleitete Struktur wurde inspiriert von diesem [Digital Ocean Blog](https:
 
 klone dieses Repo und wechsle in das Verzeichnis mit der Datei compose.yaml
 
-führe folgenden Befehl aus:
+Development Env (mit Hot Reload):
 
 ```bash
-docker compose up
+docker compose up --build
 ```
+
+Tests ausführen:
+
+```bash
+docker compose -f compose.test.yaml up --build
+```
+
+Version Produktion:
+
+```bash
+docker compose -f compose.prod.yaml up --build
+```
+
+
+
 
 ## Lizenz
 
