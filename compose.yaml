@@ -11,7 +11,7 @@ services:
     volumes:
       - .:/app
     environment:
-      - DATABASE_URI=mysql+mysqlconnector://root:root@msvc-bp-dev-db:3306/msvc-bp-dev
+      - DATABASE_URI=mysql+mysqlconnector://root:root@msvc-bp-dev-db:3306/msvc-dev
       - CHOKIDAR_USEPOLLING=true
       - FLASK_DEBUG=1
       - FLASK_HOST=0.0.0.0
@@ -27,7 +27,7 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: msvc-bp-dev
+      MYSQL_DATABASE: msvc-dev
     healthcheck:
       test: mysqladmin ping -h localhost -uroot --password=$$MYSQL_ROOT_PASSWORD
       start_period: 2s
@@ -37,7 +37,7 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - vol-msvc-dev-db:/var/lib/mysql
+      - msvc-dev-db:/var/lib/mysql
 
 volumes:
-  vol-msvc-dev-db:
+  msvc-dev-db:
