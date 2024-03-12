@@ -3,13 +3,7 @@ from app import create_app
 from test.create_test_data import create_test_data
 
 
-"""Initialize the testing environment
-
-Creates an app for testing that has the configuration flag ``TESTING`` set to
-``True``.
-
-"""
-
+# Initialize the testing environment
 
 @pytest.fixture
 def client():
