@@ -12,17 +12,18 @@ def create_app(config_class=Config):
     # Flask Erweiterungen initialisieren
     db.init_app(app)
         
-    # Datenbanktabellen anlegen
-    with app.app_context():
-        db.create_all()
-        create_test_data()  ## diese Zeile auskommentieren, wenn man keine Testdaten braucht
-
     # Blueprints registrieren
     from app.students import bp as students_bp
     app.register_blueprint(students_bp, url_prefix='/students')
 
     from app.courses import bp as courses_bp
     app.register_blueprint(courses_bp, url_prefix='/courses')
+
+    # Datenbanktabellen anlegen
+    with app.app_context():
+        db.create_all()
+        create_test_data()  ## diese Zeile auskommentieren, wenn man keine Testdaten braucht
+
 
     @app.route('/')
     def test_page():
