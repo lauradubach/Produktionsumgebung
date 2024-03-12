@@ -21,4 +21,4 @@ ADD . /app
 
 # This is the runtime command for the container
 # Add below line if not using docker-compose
-CMD gunicorn --preload -w 2 -b 0.0.0.0:5000 wsgi:app
+CMD gunicorn --preload -w 1 -b 0.0.0.0:5000 wsgi:app
