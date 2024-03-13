@@ -7,5 +7,3 @@ services:
       context: .
       dockerfile: 'Dockerfile.test'
     container_name: msvc-bp-test-api
-    ports:
-      - 5000:5000
