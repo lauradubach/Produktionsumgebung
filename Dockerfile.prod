@@ -1,5 +1,5 @@
 # Base python package
-FROM python:3.10.10-slim-buster
+FROM python:3.10.0-alpine
 
 # Working directory
 WORKDIR /app
@@ -7,11 +7,8 @@ WORKDIR /app
 # Copy the dependencies
 COPY requirements.txt requirements.txt
 
-# Install the dependencies
-RUN pip install -r requirements.txt
-
-# Install Gunicorn
-RUN pip install gunicorn
+# Install requirements & install Gunicorn  
+RUN pip install -r requirements.txt && pip install gunicorn==21.2
 
 # for flask web server
 EXPOSE 5000
