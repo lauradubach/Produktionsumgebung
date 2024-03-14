@@ -19,5 +19,5 @@ class RegistrationOut(Schema):
 # Hilfstabelle für many to many Relation
 class Registration(db.Model):
     __tablename__ = 'registrations'
-    student_id = db.Column(db.Integer, db.ForeignKey('courses.id'), primary_key=True)
-    course_id = db.Column(db.Integer, db.ForeignKey('students.id'), primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('students.id'), primary_key=True)
+    course_id = db.Column(db.Integer, db.ForeignKey('courses.id'), primary_key=True)
