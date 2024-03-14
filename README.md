@@ -27,6 +27,37 @@ Der Source Code ist ausschliesslich für Entwicklungszwecke gedacht.
 - Alle Studenten eines Kurses anzeigen
 - Alle Kurse eines Studenten anzeigen
 
+## Design
+
+```plantuml
+
+class Student {
+    name : String
+    level : String
+    create()
+    delete()
+    update(student: Student)
+    register(course : Course)
+}
+
+class Course {
+    title : String
+    create()
+    delete()
+    update(course: Course)
+    register(student: Student)
+}
+
+class Registration
+
+Student "0..*" - "1..*" Course
+(Student, Course) .. Registration
+
+hide empty members
+hide circle
+
+```
+
 ## Installation
 
 klone dieses Repo und wechsle in das Verzeichnis mit der Datei compose.yaml
@@ -43,7 +74,7 @@ Tests ausführen:
 docker compose -f compose.test.yaml up --build
 ```
 
-Version Produktion:
+Produktion:
 
 ```bash
 docker compose -f compose.prod.yaml up --build
