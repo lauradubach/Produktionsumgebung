@@ -14,7 +14,6 @@ class RegistrationStudentIn(Schema):
 class RegistrationOut(Schema):
     course_id = Integer()
     student_id = Integer()
-    mark = Float()
 
 # Hilfstabelle für many to many Relation
 class Registration(db.Model):
