@@ -1,8 +1,10 @@
 version: '3.9'
 
+name: blueprint-flask-test
+
 services:
 
-  msvc-bp-prod-api:
+  msvc-bp-test-api:
     build:
       context: .
       dockerfile: 'Dockerfile.test'

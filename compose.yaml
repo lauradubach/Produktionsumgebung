@@ -1,9 +1,12 @@
 version: '3.9'
 
+name: blueprint-flask-dev
+
 services:
 
   msvc-bp-dev-api:
     container_name: msvc-bp-dev-api
+    restart: always
     build:
       context: .
     ports:
