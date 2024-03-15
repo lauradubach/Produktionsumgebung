@@ -56,9 +56,6 @@ deploy-job:
         - echo "StrictHostKeyChecking no" >> ~/.ssh/config
         # upload docker-compose to the server
         - scp compose.prod.yaml ec2-user@$DEPLOY_TARGET:/home/ec2-user/compose.yaml
-        # copy production nginx config to server
-        - scp ./proxy/nginx-proxy.prod.conf ec2-user@$DEPLOY_TARGET:/home/ec2-user/user_conf.d/server.conf
-        # docker login and restart services
         - ssh ec2-user@$DEPLOY_TARGET "cd /home/ec2-user; 
             docker login -u $CI_REGISTRY_USER 
                 -p $CI_REGISTRY_PASSWORD $CI_REGISTRY;
