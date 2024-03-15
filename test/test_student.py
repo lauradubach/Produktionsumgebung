@@ -1,4 +1,5 @@
 from test import client
+import pytest
 
 def test_get_students(client):
     response = client.get("/students/")
@@ -21,6 +22,10 @@ def test_change_student(client):
 def test_register_student(client):
     response = client.post("/students/2/courses", json={'course_id': '1'})
     assert response.status_code == 201
+
+def test_course_double_register(client):
+    with pytest.raises(Exception):  
+        client.post("/students/5/courses", json={'course_id': '3'})    
 
 def test_get_student_courses(client):
     response = client.get("/students/5/courses")
