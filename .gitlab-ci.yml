@@ -54,11 +54,13 @@ deploy-job:
         - echo $SSH_HOST_KEY >> ~/.ssh/known_hosts
         - echo "HOST *" > ~/.ssh/config
         - echo "StrictHostKeyChecking no" >> ~/.ssh/config
-        # upload docker-compose to the server
+        # upload docker-compose file to the server
         - scp compose.prod.yaml ec2-user@$DEPLOY_TARGET:/home/ec2-user/compose.yaml
+        # pull newest images from registry and start them
         - ssh ec2-user@$DEPLOY_TARGET "cd /home/ec2-user; 
             docker login -u $CI_REGISTRY_USER 
                 -p $CI_REGISTRY_PASSWORD $CI_REGISTRY;
+            docker compose pull;
             docker compose up -d"
     rules:
         # only deploy if new commit on main-branch
