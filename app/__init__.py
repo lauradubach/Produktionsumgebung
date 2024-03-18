@@ -9,10 +9,10 @@ def create_app(config_class=Config):
     app = APIFlask(__name__)
     app.config.from_object(config_class)
 
-    # Initialize Flask extensions here
+    # Flask Erweiterungen initialisieren
     db.init_app(app)
         
-    # Register blueprints here
+    # Blueprints registrieren
     from app.students import bp as students_bp
     app.register_blueprint(students_bp, url_prefix='/students')
 
