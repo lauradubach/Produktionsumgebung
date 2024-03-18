@@ -24,6 +24,6 @@ def create_app(config_class=Config):
 
     @app.route('/')
     def test_page():
-        return {'message': 'Testing the Flask Application Factory Pattern'}
+        return {'message': 'Blueprint Flask - Production Setup - v1.0'}
 
     return app

@@ -10,6 +10,7 @@ services:
       context: .
       dockerfile: 'Dockerfile.prod'
     container_name: msvc-bp-prod-api
+    restart: always
     environment:
       - DATABASE_URI=mysql+mysqlconnector://root:root@msvc-bp-prod-db:3306/msvc-prod
     ports:
