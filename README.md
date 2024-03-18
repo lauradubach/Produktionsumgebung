@@ -80,6 +80,14 @@ Produktion:
 docker compose -f compose.prod.yaml up --build
 ```
 
+## CI/CD
+
+Eine Konfiguration für GitLab-CI ist im Projekt angelegt. Damit die Pipeline funktioniert müssen folgende Variablen bei den Projekt- oder Gruppen-CI Variablen gesetzt werden:
+
+- DEPLOY_TARGET - die IP-Adresse oder der DNS-Name des Ziel-Servers
+- SSH_HOST_KEY - generiert durch _sudo ssh-keygen -l -f ~/.ssh/authorized_keys_ auf dem server (zum hinzufügen des Hosts zu den vertrauensvollen Servern ohne Rückfrage.)
+- SSH_PRIVATE_KEY - der private SSH-Key des Servers (auf AWS EC2 normalerweise während der Erstellung generiert)
+
 
 
 

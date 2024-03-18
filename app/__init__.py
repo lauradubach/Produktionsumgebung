@@ -24,6 +24,6 @@ def create_app(config_class=Config):
 
     @app.route('/')
     def test_page():
-        return {'message': 'Blueprint Flask - Production Setup - v1.0'}
+        return {'message': 'Blueprint Flask - Production Setup (MSVC) - v1.0'}
 
     return app
