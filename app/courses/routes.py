@@ -4,22 +4,25 @@ from app.models.course import Course, CourseIn, CourseOut
 from app.models.student import Student, StudentOut 
 from app.models.registration import RegistrationStudentIn
 
-
+from app.auth import token_auth
 
 ####
 ## view functions
 ####    
 @bp.get('/<int:course_id>')
+@bp.auth_required(token_auth)
 @bp.output(CourseOut)
 def get_course(course_id):
     return db.get_or_404(Course, course_id)
 
 @bp.get('/')
+@bp.auth_required(token_auth)
 @bp.output(CourseOut(many=True))
 def get_courses():
     return Course.query.all()
 
 @bp.post('/')
+@bp.auth_required(token_auth)
 @bp.input(CourseIn, location='json')
 @bp.output(CourseOut, status_code=201)
 def create_course(json_data):
@@ -29,6 +32,7 @@ def create_course(json_data):
     return course
 
 @bp.patch('/<int:course_id>')
+@bp.auth_required(token_auth)
 @bp.input(CourseIn(partial=True), location='json')
 @bp.output(CourseOut)
 def update_course(course_id, json_data):
@@ -39,6 +43,7 @@ def update_course(course_id, json_data):
     return course
 
 @bp.delete('/<int:course_id>')
+@bp.auth_required(token_auth)
 @bp.output({}, status_code=204)
 def delete_course(course_id):
     course = db.get_or_404(Course, course_id)
@@ -48,6 +53,7 @@ def delete_course(course_id):
 
 # register a student with a course
 @bp.post('/<int:course_id>/students')
+@bp.auth_required(token_auth)
 @bp.input(RegistrationStudentIn, location='json')
 @bp.output(CourseOut, status_code=201)
 def register_student(course_id, json_data):
@@ -59,6 +65,7 @@ def register_student(course_id, json_data):
 
 # get all students of a course
 @bp.get('/<int:course_id>/students')
+@bp.auth_required(token_auth)
 @bp.output(StudentOut(many=True))
 def get_course_students(course_id):
     course = db.get_or_404(Course, course_id)

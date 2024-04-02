@@ -3,8 +3,6 @@ from apiflask import APIFlask
 from config import Config
 from app.extensions import db
 
-
-
 def create_app(config_class=Config):
     app = APIFlask(__name__)
     app.config.from_object(config_class)
@@ -18,6 +16,9 @@ def create_app(config_class=Config):
 
     from app.courses import bp as courses_bp
     app.register_blueprint(courses_bp, url_prefix='/courses')
+
+    from app.users import bp as users_bp
+    app.register_blueprint(users_bp, url_prefix='/users')
 
     with app.app_context():
         db.create_all()
