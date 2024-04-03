@@ -2,6 +2,8 @@ from app.users import bp
 from app.extensions import db
 from app.models.user import User, UserIn, UserOut, LoginIn, TokenOut
 
+from werkzeug.security import generate_password_hash
+
 from app.auth import token_auth
 
 ####
@@ -29,7 +31,13 @@ def create_user(json_data):
 def update_user(course_id, json_data):
     user = db.get_or_404(User, course_id)
     for attr, value in json_data.items():
-        setattr(user, attr, value)
+        # If the attribute is 'password', hash it before saving
+        if attr == 'password':
+            hashed_password = generate_password_hash(value)
+            setattr(user, attr, hashed_password)
+        else:
+            # For all other attributes, save them as they are
+            setattr(user, attr, value)
     db.session.commit()
     return user
 
