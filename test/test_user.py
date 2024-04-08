@@ -1,10 +1,8 @@
 from test import client
 import pytest
 
-def test_get_user(client):
-    response0 = client.post("/users/login", json={'email': 'test@test.ch', 'password': 'test'})
-    access_token = response0.json["token"]
-    headers = { 'Authorization': 'Bearer {}'.format(access_token) }    
+def test_get_user(client, auth_token):
+    headers = { 'Authorization': 'Bearer {}'.format(auth_token) }
     response = client.get("/users/1", headers=headers)
     assert response.status_code == 200
     assert response.json['name'] == 'Test'
