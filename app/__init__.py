@@ -3,6 +3,8 @@ from apiflask import APIFlask
 from config import Config
 from app.extensions import db
 
+import flask_monitoringdashboard as dashboard
+
 def create_app(config_class=Config):
     app = APIFlask(__name__)
     app.config.from_object(config_class)
@@ -26,5 +28,7 @@ def create_app(config_class=Config):
     @app.route('/')
     def test_page():
         return {'message': 'Blueprint Flask - Production Setup (MSVC) - v1.0'}
+
+    dashboard.bind(app)
 
     return app

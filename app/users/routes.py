@@ -6,6 +6,8 @@ from werkzeug.security import generate_password_hash
 
 from app.auth import token_auth
 
+import logging
+
 ####
 ## view functions
 ####    
@@ -58,7 +60,9 @@ def login_user(json_data):
     user = User.query.filter_by(email=json_data.get('email')).first()
     # If user doesn't exist or password is wrong
     if not user or not user.check_password(json_data.get('password')):
+        logging.warning('Unsuccessful login attempt from user: '+json_data.get('email'))
         return {'message': 'Invalid email or password'}, 401
-    
+        
     token = user.generate_auth_token(600)
+    logging.info('User '+json_data.get('email') + ' logged in')
     return { 'token': token, 'duration': 600 }
