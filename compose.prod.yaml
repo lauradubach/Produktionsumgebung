@@ -14,6 +14,7 @@ services:
     environment:
       - DATABASE_URI=mysql+mysqlconnector://root:root@msvc-bp-prod-db:3306/msvc-prod
       - SECRET_KEY='very_secret'
+      - FLASK_MONITORING_DASHBOARD_ENABLED='True'
     ports:
       - 80:5000
     depends_on:
@@ -21,7 +22,7 @@ services:
         condition: service_healthy
 
   msvc-bp-prod-db:
-    image: mysql:5.7
+    image: mysql:8.0.36
     container_name: msvc-bp-prod-db
     restart: always
     environment:

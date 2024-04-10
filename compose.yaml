@@ -21,12 +21,13 @@ services:
       - FLASK_PORT=5000
       - FLASK_APP=app
       - SECRET_KEY='very_secret'
+      - FLASK_MONITORING_DASHBOARD_ENABLED='True'
     depends_on:
       msvc-bp-dev-db:
         condition: service_healthy
 
   msvc-bp-dev-db:
-    image: mysql:5.7
+    image: mysql:8.0.36
     container_name: msvc-bp-dev-db
     restart: always
     environment:

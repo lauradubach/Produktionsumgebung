@@ -27,8 +27,11 @@ def create_app(config_class=Config):
 
     @app.route('/')
     def test_page():
-        return {'message': 'Blueprint Flask - Production Setup (MSVC) - v1.0'}
+        return {'message': 'Blueprint Flask - Production Setup (MSVC) - v1.1'}
 
-    dashboard.bind(app)
+    if Config.MONITORING_DASHBOARD_ENABLED:
+        dashboard.config.database_name=Config.MONITORING_DATABASE_URL
+        dashboard.config.table_prefix=Config.MONITORING_TABLE_PREFIX
+        dashboard.bind(app)
 
     return app
