@@ -22,7 +22,7 @@ services:
         condition: service_healthy
 
   msvc-bp-prod-db:
-    image: mysql:8.0.36
+    image: mysql:5.7.43
     container_name: msvc-bp-prod-db
     restart: always
     environment:

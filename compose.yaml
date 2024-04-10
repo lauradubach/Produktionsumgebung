@@ -27,7 +27,7 @@ services:
         condition: service_healthy
 
   msvc-bp-dev-db:
-    image: mysql:8.0.36
+    image: mysql:5.7.43
     container_name: msvc-bp-dev-db
     restart: always
     environment:
