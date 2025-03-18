@@ -1,11 +1,9 @@
-version: '3.9'
-
 name: blueprint-flask-prod
 
 services:
 
   msvc-bp-prod-api:
-    image: registry.gitlab.com/tbz-itcne23-msvc/blueprint-flask-prod:latest
+    image: ${FLASK_BLUEPRINT_IMAGE}
     build:
       context: .
       dockerfile: 'Dockerfile.prod'
@@ -20,7 +18,7 @@ services:
         condition: service_healthy
 
   msvc-bp-prod-db:
-    image: mysql:5.7
+    image: mysql:8.4.4
     container_name: msvc-bp-prod-db
     restart: always
     environment:

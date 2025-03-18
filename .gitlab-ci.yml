@@ -55,13 +55,15 @@ deploy-job:
         - echo "HOST *" > ~/.ssh/config
         - echo "StrictHostKeyChecking no" >> ~/.ssh/config
         # upload docker-compose file to the server
-        - scp compose.prod.yaml ec2-user@$DEPLOY_TARGET:/home/ec2-user/compose.yaml
+        - scp compose.prod.yaml $DEPLOY_TARGET_USER@$DEPLOY_TARGET:/home/$DEPLOY_TARGET_USER/compose_blueprint_flask.yaml
         # pull newest images from registry and start them
-        - ssh ec2-user@$DEPLOY_TARGET "cd /home/ec2-user; 
+        - ssh $DEPLOY_TARGET_USER@$DEPLOY_TARGET "cd /home/$DEPLOY_TARGET_USER;
+            sed -i '/^FLASK_BLUEPRINT_IMAGE=/d' .env;
+            echo \"FLASK_BLUEPRINT_IMAGE=$CI_REGISTRY_IMAGE:latest\" >> .env || exit 1; 
             docker login -u $CI_REGISTRY_USER 
                 -p $CI_REGISTRY_PASSWORD $CI_REGISTRY;
-            docker compose pull;
-            docker compose up -d"
+            docker compose -f compose_blueprint_flask.yaml pull;
+            docker compose -f compose_blueprint_flask.yaml up -d"
     rules:
         # only deploy if new commit on main-branch
         - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
