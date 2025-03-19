@@ -2,7 +2,7 @@ from apiflask import APIFlask
 
 from config import Config
 from app.extensions import db
-
+from flask_migrate import Migrate
 
 
 def create_app(config_class=Config):
@@ -11,7 +11,8 @@ def create_app(config_class=Config):
 
     # Flask Erweiterungen initialisieren
     db.init_app(app)
-        
+    migrate = Migrate(app, db)
+
     # Blueprints registrieren
     from app.students import bp as students_bp
     app.register_blueprint(students_bp, url_prefix='/students')
