@@ -59,7 +59,9 @@ deploy-job:
         # pull newest images from registry and start them
         - ssh $DEPLOY_TARGET_USER@$DEPLOY_TARGET "cd /home/$DEPLOY_TARGET_USER;
             sed -i '/^FLASK_BLUEPRINT_IMAGE=/d' .env;
-            echo \"FLASK_BLUEPRINT_IMAGE=$CI_REGISTRY_IMAGE:latest\" >> .env || exit 1; 
+            echo \"FLASK_BLUEPRINT_IMAGE=$CI_REGISTRY_IMAGE:latest\" >> .env || exit 1;
+            sed -i '/^DB_ROOT_PASSWORD=/d' .env;
+            echo \"DB_ROOT_PASSWORD=$DB_ROOT_PASSWORD\" >> .env || exit 1;
             docker login -u $CI_REGISTRY_USER 
                 -p $CI_REGISTRY_PASSWORD $CI_REGISTRY;
             docker compose -f compose_blueprint_flask.yaml pull;

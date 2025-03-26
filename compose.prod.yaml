@@ -10,7 +10,7 @@ services:
     container_name: msvc-bp-prod-api
     restart: always
     environment:
-      - DATABASE_URI=mysql+mysqlconnector://root:root@msvc-bp-prod-db:3306/msvc-prod
+      - DATABASE_URI=mysql+mysqlconnector://root:${DB_ROOT_PASSWORD}@msvc-bp-prod-db:3306/msvc-prod
     ports:
       - 80:5000
     depends_on:
@@ -22,7 +22,7 @@ services:
     container_name: msvc-bp-prod-db
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: msvc-prod
     healthcheck:
       test: mysqladmin ping -h localhost -uroot --password=$$MYSQL_ROOT_PASSWORD
