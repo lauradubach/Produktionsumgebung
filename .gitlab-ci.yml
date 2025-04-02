@@ -29,6 +29,9 @@ build-job:
     - docker build -t $TAG_COMMIT -t $TAG_LATEST -f Dockerfile.prod .
     - docker push $TAG_COMMIT
     - docker push $TAG_LATEST
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE:latest -f Dockerfile.prod .
+    - docker push $CI_REGISTRY_IMAGE:latest
  
 deploy-job:
     stage: deploy
