@@ -4,26 +4,26 @@ stages:
   - deploy
  
 test-job:
-  stage: test
   image: python:3.10.10-alpine
+  stage: test
+  before_script:
+    - echo "Installiere Abhängigkeiten und führe Tests aus"
+    - pip install -r requirements.txt
+    - pip install pytest responses pytest-cov
   script:
-    - python --version  # Überprüft, ob Python installiert ist
-    - pip install -r requirements.txt  # Installiert Abhängigkeiten (falls nötig)
-    - pytest tests/  # Führt Tests aus
-  only:
-    - main
+    - python3 -m pytest --cov=app
  
 build-job:
+  image: docker:cli
   stage: build
-  image: docker:latest
   services:
     - docker:dind
+  before_script:
+    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" "$CI_REGISTRY"
   script:
-    - docker build -t $CI_REGISTRY_IMAGE:latest .
-    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-    - docker push $CI_REGISTRY_IMAGE:latest
-  only:
-    - main
+    - docker build -t $TAG_COMMIT -t $TAG_LATEST -f Dockerfile.prod .
+    - docker push $TAG_COMMIT
+    - docker push $TAG_LATEST
  
 deploy-job:
   stage: deploy
