@@ -18,6 +18,7 @@ services:
       - FLASK_HOST=0.0.0.0
       - FLASK_PORT=5000
       - FLASK_APP=app
+      - SECRET_KEY='very_secret'
     depends_on:
       msvc-bp-dev-db:
         condition: service_healthy
@@ -29,6 +30,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: msvc-dev
+      MYSQL_ROOT_HOST: '%'
     healthcheck:
       test: mysqladmin ping -h localhost -uroot --password=$$MYSQL_ROOT_PASSWORD
       start_period: 2s

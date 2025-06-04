@@ -82,16 +82,13 @@ docker compose -f compose.prod.yaml up --build
 
 ## CI/CD
 
-Eine Konfiguration für GitLab-CI ist im Projekt angelegt. Damit die Pipeline funktioniert müssen folgende Variablen bei den Projekt- oder Gruppen-CI Variablen gesetzt werden:
+Eine Konfiguration für Github-CI ist im Projekt angelegt. Damit die Pipeline funktioniert müssen folgende Variablen bei den Projekt- oder Gruppen-CI Secrets gesetzt werden:
 
 - DEPLOY_TARGET - die IP-Adresse oder der DNS-Name des Ziel-Servers
 - DEPLOY_TARGET_USER - der user, mit dem wir uns auf dem target server einloggen
 - SSH_HOST_KEY - generiert durch _sudo ssh-keygen -l -f ~/.ssh/authorized_keys_ auf dem server (zum hinzufügen des Hosts zu den vertrauensvollen Servern ohne Rückfrage.)
 - SSH_PRIVATE_KEY - der private SSH-Key des Servers (auf AWS EC2 normalerweise während der Erstellung generiert)
 - DB_ROOT_PASSWORD - das Root Passwort der MySQL-Datenbank 
-
-
-
 
 ## Lizenz
 

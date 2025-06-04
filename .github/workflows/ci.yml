@@ -84,6 +84,9 @@ jobs:
             sed -i '/^DB_ROOT_PASSWORD=/d' .env || true
             echo "DB_ROOT_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}" >> .env
 
+            sed -i '/^TICKETMASTER_API_KEY=/d' .env || true
+            echo "TICKETMASTER_API_KEY=${{ secrets.TICKETMASTER_API_KEY }}" >> .env
+
             docker login -u ${{ secrets.REGISTRY_USER }} -p ${{ secrets.REGISTRY_PASSWORD }} ghcr.io
 
             docker compose -f compose_blueprint_flask.yaml pull
