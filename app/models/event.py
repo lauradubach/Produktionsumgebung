@@ -16,7 +16,7 @@ class Event(db.Model):
     __tablename__ = 'events'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255))
+    title = db.Column(db.String(255))
     city = db.Column(db.String(120))
 
     favorites = db.relationship(

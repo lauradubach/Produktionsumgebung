@@ -2,14 +2,11 @@ from app.models.favorite import Favorite
 from app.models.user import User
 from app.models.event import Event
 from app.extensions import db
-from apiflask import APIFlask
 
-
-def test_user_can_favorite_event():
-    app = APIFlask(__name__)
-    with app.app_context():
-        user = User(email="fav@user.com", favorite_genre="Pop")
-        event = Event(city="berlin")
+def test_user_can_favorite_event(client):
+    with client.application.app_context():
+        user = User(email="newuser@example.com", favorite_genre="Jazz")
+        event = Event(city="hamburg")
         db.session.add(user)
         db.session.add(event)
         db.session.commit()

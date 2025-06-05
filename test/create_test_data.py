@@ -4,9 +4,6 @@ from app.models.event import Event
 from app.models.favorite import Favorite
 
 def create_test_data():
-    db.drop_all()
-    db.create_all()
-
     user = User(email='demo@user.com', favorite_genre='Rock')
     db.session.add(user)
 
@@ -15,7 +12,6 @@ def create_test_data():
 
     db.session.commit()
 
-    # Favorite-Verknüpfung
     favorite = Favorite(user_id=user.id, event_id=event.id, mark=5.0)
     db.session.add(favorite)
 
