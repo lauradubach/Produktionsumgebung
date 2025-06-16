@@ -4,11 +4,34 @@
     <meta charset="UTF-8">
     <title>Musik Event Finder</title>
     <style>
+        :root {
+            --bg-color: #eef2f7;
+            --text-color: #222;
+            --card-bg: #ffffff;
+            --input-bg: #f9f9f9;
+            --button-bg: #7f8ccd;
+            --button-hover: #6a76b5;
+            --logout-bg: #e06b6b;
+            --logout-hover: #c35a5a;
+        }
+
+        body.dark-mode {
+            --bg-color: #1c1f26;
+            --text-color: #e5e5e5;
+            --card-bg: #2c2f36;
+            --input-bg: #3a3d44;
+            --button-bg: #949fd1;
+            --button-hover: #7c88c2;
+            --logout-bg: #e06b6b;
+            --logout-hover: #c35a5a;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 2rem;
-            background-color: #eef2f7;
-            color: #222;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background 0.3s, color 0.3s;
         }
 
         a {
@@ -21,7 +44,7 @@
         }
 
         .page-header {
-            background-image: url('https://images.unsplash.com/photo-1506157786151-b8491531f063?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bXVzaWMlMjBmZXN0aXZhbHxlbnwwfHwwfHx8MA%3D%3D');
+            background-image: url('https://images.unsplash.com/photo-1506157786151-b8491531f063?fm=jpg&q=60&w=3000');
             background-size: cover;
             background-position: center;
             border-radius: 12px;
@@ -29,6 +52,7 @@
             padding: 3rem 1.5rem;
             margin-bottom: 2rem;
             text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+            position: relative;
         }
 
         .page-header h1 {
@@ -36,8 +60,51 @@
             font-size: 2.5rem;
         }
 
+        .dark-toggle {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            background: rgba(0,0,0,0.4);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            color: #fff;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-action {
+            padding: 0.5rem 1.2rem;
+            background-color: var(--button-bg);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s ease;
+        }
+
+        .btn-action:hover {
+            background-color: var(--button-hover);
+        }
+
+        .btn-logout {
+            background-color: var(--logout-bg);
+        }
+
+        .btn-logout:hover {
+            background-color: var(--logout-hover);
+        }
+
         form {
-            background: #ffffff;
+            background: var(--card-bg);
             padding: 1.5rem;
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
@@ -52,13 +119,14 @@
             border: 1px solid #ccc;
             border-radius: 6px;
             flex: 1 1 180px;
-            background-color: #f9f9f9;
+            background-color: var(--input-bg);
+            color: var(--text-color);
         }
 
         button {
             padding: 0.5rem 1rem;
             margin-left: 0.3rem;
-            background-color: #8e44ad;
+            background-color: var(--button-bg);
             color: white;
             border: none;
             border-radius: 6px;
@@ -67,26 +135,11 @@
         }
 
         button:hover {
-            background-color: #732d91;
-        }
-
-        .favorites-button {
-            display: inline-block;
-            margin: 0.5rem 0 1.5rem 0;
-            padding: 0.6rem 1rem;
-            background-color: #0d6efd;
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            font-weight: bold;
-        }
-
-        .favorites-button:hover {
-            background-color: #0b5ed7;
+            background-color: var(--button-hover);
         }
 
         .event {
-            background-color: #ffffff;
+            background-color: var(--card-bg);
             padding: 1.2rem;
             margin-bottom: 1.5rem;
             border-radius: 8px;
@@ -146,12 +199,13 @@
 
 <div class="page-header">
     <h1>🎵 Musik Event Finder</h1>
+    <div class="dark-toggle" onclick="toggleDarkMode()">🌓 Dark Mode</div>
 </div>
 
-<p>
-    <a href="{{ url_for('ui.logout') }}">Logout</a> |
-    <a href="{{ url_for('ui.favorites_page') }}" class="favorites-button">Favorites</a>
-</p>
+<div class="action-buttons">
+    <a href="{{ url_for('ui.favorites_page') }}" class="btn-action">⭐ Favoriten</a>
+    <a href="{{ url_for('ui.logout') }}" class="btn-action btn-logout">🚪 Logout</a>
+</div>
 
 <form method="get">
     <input type="text" name="keyword" placeholder="Genre oder Stichwort" value="{{ request.args.get('keyword', '') }}">
@@ -202,6 +256,20 @@
 {% else %}
     <p>Keine Events gefunden.</p>
 {% endif %}
+
+<script>
+    function toggleDarkMode() {
+        document.body.classList.toggle('dark-mode');
+        localStorage.setItem('darkMode', document.body.classList.contains('dark-mode') ? '1' : '0');
+    }
+
+    // Beim Laden: prüfen ob Dark Mode gesetzt war
+    window.addEventListener('DOMContentLoaded', () => {
+        if (localStorage.getItem('darkMode') === '1') {
+            document.body.classList.add('dark-mode');
+        }
+    });
+</script>
 
 </body>
 </html>

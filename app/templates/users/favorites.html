@@ -4,14 +4,82 @@
     <meta charset="UTF-8">
     <title>Favoriten</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 2rem; }
-        .event { border: 1px solid #ddd; padding: 1rem; margin-bottom: 1rem; border-radius: 5px; }
-        .event h3 { margin-top: 0; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 2rem;
+            background-color: #f5f7fb;
+            color: #333;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #5a2a82;
+            margin-bottom: 1.5rem;
+        }
+
+        .event {
+            background: white;
+            border-left: 5px solid #8e44ad;
+            padding: 1.2rem 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .event:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .event h3 {
+            margin-top: 0;
+            color: #4b2364;
+        }
+
+        .event p {
+            margin: 0.4rem 0;
+        }
+
+        .event a {
+            display: inline-block;
+            margin-top: 0.5rem;
+            padding: 0.4rem 0.8rem;
+            background-color: #8e44ad;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.95rem;
+            transition: background-color 0.2s ease;
+        }
+
+        .event a:hover {
+            background-color: #732d91;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            text-decoration: none;
+            color: #5a2a82;
+            font-weight: bold;
+            transition: color 0.2s ease;
+        }
+
+        .back-link:hover {
+            color: #3e1a5e;
+            text-decoration: underline;
+        }
+
+        .empty-message {
+            font-style: italic;
+            color: #777;
+        }
     </style>
 </head>
 <body>
 
-<h1>Deine Favoriten</h1>
+<h1>💜 Deine Favoriten</h1>
 
 {% if events %}
     {% for event in events %}
@@ -26,10 +94,10 @@
         </div>
     {% endfor %}
 {% else %}
-    <p>Du hast noch keine Favoriten gespeichert.</p>
+    <p class="empty-message">Du hast noch keine Favoriten gespeichert.</p>
 {% endif %}
 
-<p><a href="{{ url_for('ui.search') }}">Zurück zur Suche</a></p>
+<p><a href="{{ url_for('ui.search') }}" class="back-link">← Zurück zur Suche</a></p>
 
 </body>
 </html>
