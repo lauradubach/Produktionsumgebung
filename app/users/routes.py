@@ -1,31 +1,93 @@
 from app.users import bp
 from app.extensions import db
-from app.models.user import User, UserIn, UserOut
-from app.models.event import Event, EventOut
-from app.models.favorite import Favorite, FavoriteEventIn, FavoriteOut
-from flask import abort
+from app.models.user import User, UserIn, UserOut, LoginIn, TokenOut
+from app.auth.token_auth import token_auth
+from apiflask import abort
+ 
+from werkzeug.security import generate_password_hash
+from flask import request
+ 
+####
+## view functions
+####    
+@bp.get('/<int:user_id>')
+@bp.auth_required(token_auth)
+@bp.output(UserOut)
+def get_one_user(user_id):
+    current_user = token_auth.current_user
+    if not current_user:
+        abort(401, message="Unauthorized - No user found")
 
-# Event als Favorit hinzufügen (inkl. optionaler Bewertung)
-@bp.post('/<int:user_id>/favorites')
-@bp.input(FavoriteEventIn, location='json')
-@bp.output(FavoriteOut, status_code=201)
-def add_favorite(user_id, json_data):
-    user = db.get_or_404(User, user_id)
-    event = db.get_or_404(Event, json_data['event_id'])
+@bp.get('/')
+@bp.auth_required(token_auth) # Protected Route
+@bp.output(UserOut(many=True))
+def get_all_users():
+    current_user = token_auth.current_user
+    if not current_user:
+        abort(401, message="Unauthorized - No user found")
 
-    # Doppelte Favoriten vermeiden
-    existing = Favorite.query.filter_by(user_id=user.id, event_id=event.id).first()
-    if existing:
-        abort(400, "Event already favorited by user.")
-
-    fav = Favorite(user_id=user.id, event_id=event.id, mark=json_data.get("mark"))
-    db.session.add(fav)
+@bp.post('/')
+@bp.input(UserIn, location='json')
+@bp.output(UserOut, status_code=201)
+def create_user(json_data):
+    user = User(**json_data)
+    db.session.add(user)
     db.session.commit()
-    return fav
+    return user
+ 
+@bp.patch('/<int:user_id>')
+@bp.auth_required(token_auth)
+@bp.input(UserIn(partial=True), location='json')
+@bp.output(TokenOut, status_code=200)
+def update_user(user_id, json_data):
+    current_user = token_auth.current_user
+    if not current_user:
+        abort(401, message="Unauthorized - No user found")
 
-# Alle Favoriten eines Users abrufen
-@bp.get('/<int:user_id>/favorites')
-@bp.output(EventOut(many=True))
-def get_user_favorites(user_id):
     user = db.get_or_404(User, user_id)
-    return user.get_favorite_events()
+        
+    for attr, value in json_data.items():
+        if attr == "password":
+            user.password = value
+            password_changed = True
+        else:
+            setattr(user, attr, value)
+    
+    db.session.commit()
+
+    if password_changed:
+        token = user.generate_auth_token(600)
+        return {'token': token, 'duration': 600}
+
+    # Standardantwort bei normalen Änderungen
+    return {'token': '', 'duration': 0}
+ 
+@bp.delete('/<int:user_id>')
+@bp.auth_required(token_auth)
+@bp.output({}, status_code=204)
+def delete_user(user_id):
+    current_user = token_auth.current_user
+    if not current_user:
+        abort(401, message="Unauthorized - No user found")
+
+    user = db.get_or_404(User, user_id)
+    db.session.delete(user)
+    db.session.commit()
+    return 'User succesfully deleted'
+
+@bp.post('/login')
+@bp.input(LoginIn, location='json')
+@bp.output(TokenOut, status_code=200)
+def login_user(json_data):
+    user = User.query.filter_by(email=json_data.get('email')).first()
+    if not user or not user.check_password(json_data.get('password')):
+        abort(401, message='Invalid email or password')
+
+    token = user.generate_auth_token(600)
+    # return {'token': token, 'duration': 600}
+
+    return {
+        'token': token,
+        'duration': 600,
+        'user_id': user.id
+    }

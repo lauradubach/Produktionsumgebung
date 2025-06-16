@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8" />
+    <title>Registrierung</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; }
+        form { max-width: 400px; margin: auto; background: #f0f0f0; padding: 1rem; border-radius: 8px; }
+        input, button { width: 100%; padding: 0.5rem; margin: 0.5rem 0; }
+        .flash { padding: 0.5rem; margin-bottom: 1rem; border-radius: 5px; }
+        .error { background: #f8d7da; color: #842029; }
+        .success { background: #d1e7dd; color: #0f5132; }
+    </style>
+</head>
+<body>
+    <h1>Registrierung</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="post">
+        <input type="text" name="name" placeholder="Name" required />
+        <input type="email" name="email" placeholder="Email" required />
+        <input type="password" name="password" placeholder="Password" required />
+        <button type="submit">Registrieren</button>
+    </form>
+
+    <p>Schon registriert? <a href="{{ url_for('ui.login') }}">Hier einloggen</a></p>
+</body>
+</html>

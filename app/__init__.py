@@ -18,11 +18,17 @@ def create_app(config_class=Config):
     migrate = Migrate(app, db)
 
     # Blueprints registrieren
-    from app.events.routes import events_bp
-    app.register_blueprint(events_bp)
+    from app.events import bp as events_bp
+    app.register_blueprint(events_bp, url_prefix='/events')
 
-    from app.users.routes import bp as users_bp
-    app.register_blueprint(users_bp)
+    from app.users import bp as users_bp
+    app.register_blueprint(users_bp, url_prefix='/users')
+
+    from app.ui import bp as ui_bp
+    app.register_blueprint(ui_bp, url_prefix='/ui')
+
+    from app.favorites import bp as favorites_bp
+    app.register_blueprint(favorites_bp, url_prefix='/favorites')
 
     with app.app_context():
         db.create_all()

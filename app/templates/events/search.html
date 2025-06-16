@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Musik Event Finder</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 2rem;
+            background-color: #eef2f7;
+            color: #222;
+        }
+
+        a {
+            color: #0d6efd;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .page-header {
+            background-image: url('https://images.unsplash.com/photo-1506157786151-b8491531f063?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bXVzaWMlMjBmZXN0aXZhbHxlbnwwfHwwfHx8MA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            border-radius: 12px;
+            color: white;
+            padding: 3rem 1.5rem;
+            margin-bottom: 2rem;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+        }
+
+        .page-header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+
+        form {
+            background: #ffffff;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-bottom: 2rem;
+        }
+
+        input[type="text"], input[type="date"] {
+            padding: 0.6rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            flex: 1 1 180px;
+            background-color: #f9f9f9;
+        }
+
+        button {
+            padding: 0.5rem 1rem;
+            margin-left: 0.3rem;
+            background-color: #8e44ad;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #732d91;
+        }
+
+        .favorites-button {
+            display: inline-block;
+            margin: 0.5rem 0 1.5rem 0;
+            padding: 0.6rem 1rem;
+            background-color: #0d6efd;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .favorites-button:hover {
+            background-color: #0b5ed7;
+        }
+
+        .event {
+            background-color: #ffffff;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+        }
+
+        .event-header {
+            background-size: cover;
+            background-position: center;
+            padding: 1rem;
+            border-radius: 6px;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .event-header::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.35);
+            border-radius: 6px;
+        }
+
+        .event-header h3, .event-header form {
+            position: relative;
+            z-index: 1;
+            margin: 0;
+        }
+
+        .event p {
+            margin: 0.3rem 0;
+        }
+
+        .star-button {
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            font-size: 1.8em;
+            line-height: 1;
+            color: gold;
+            vertical-align: middle;
+        }
+
+        .event a {
+            display: inline-block;
+            margin-top: 0.6rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="page-header">
+    <h1>🎵 Musik Event Finder</h1>
+</div>
+
+<p>
+    <a href="{{ url_for('ui.logout') }}">Logout</a> |
+    <a href="{{ url_for('ui.favorites_page') }}" class="favorites-button">Favorites</a>
+</p>
+
+<form method="get">
+    <input type="text" name="keyword" placeholder="Genre oder Stichwort" value="{{ request.args.get('keyword', '') }}">
+    <input type="text" name="city" placeholder="Stadt" value="{{ request.args.get('city', '') }}">
+    <input type="text" name="country" placeholder="Ländercode (z.B. DE, FR, IT)" value="{{ request.args.get('country', '') }}">
+    <input type="date" name="start_date" value="{{ request.args.get('start_date', '') }}">
+    <input type="date" name="end_date" value="{{ request.args.get('end_date', '') }}">
+    <button type="submit">🔍 Suchen</button>
+</form>
+
+{% set backgrounds = [
+    'https://www.electriclove.at/de/wp-content/uploads/sites/3/fly-images/8263/ELF25-Website-Header-Festival-2000x9999.png',
+    'https://images.unsplash.com/photo-1507874457470-272b3c8d8ee2?fit=crop&w=1200&q=80',
+    'https://t3.ftcdn.net/jpg/00/45/45/28/360_F_45452813_GRq1yWpEBQI2htiYwXO0WLCRhNInYlue.jpg',
+    'https://www.charivari.de/wp-content/uploads/2022/11/musik-stars-konzerte-live-muenchen-opener-1280x360-1.jpg',
+    'https://www.hamburg.de/resource/image/919020/landscape_ratio16x9/1240/697/9bce3cdb6077b7939a22797dacf111d1/C7886E91C1F451B07A07FAADB0DB6F4F/bild-konzert-barclays-arena.jpg'
+] %}
+
+{% if events %}
+    <h2>Gefundene Events ({{ events|length }})</h2>
+    {% for event in events %}
+        <div class="event">
+            <div class="event-header" style="background-image: url('{{ backgrounds[loop.index0 % backgrounds|length] }}');">
+                <h3>{{ event.title }}</h3>
+                {% if user_id %}
+                    <form method="post" action="{{ url_for('favorites.toggle_favorite') }}">
+                        <input type="hidden" name="event_id" value="{{ event.id }}">
+                        <input type="hidden" name="next" value="{{ request.full_path }}">
+                        <input type="hidden" name="is_favorite" value="{{ '1' if event.id in favorite_event_ids else '0' }}">
+                        <button type="submit" class="star-button" title="Favorit toggeln">
+                            {% if event.id in favorite_event_ids %}
+                                ★
+                            {% else %}
+                                ☆
+                            {% endif %}
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+            <p><strong>Datum:</strong> {{ event.start }}</p>
+            <p><strong>Ort:</strong> {{ event.location }}, {{ event.city }}, {{ event.country }}</p>
+            {% if event.artists %}
+                <p><strong>Künstler:</strong> {{ event.artists }}</p>
+            {% endif %}
+            <p><a href="{{ event.url }}" target="_blank">Eventseite öffnen</a></p>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>Keine Events gefunden.</p>
+{% endif %}
+
+</body>
+</html>

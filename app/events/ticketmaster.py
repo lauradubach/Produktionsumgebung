@@ -1,58 +1,44 @@
-import requests
 import os
+import requests
 
-# Hole den API Key aus den Umgebungsvariablen
-API_KEY = os.environ.get('TICKETMASTER_API_KEY')
-BASE_URL = "https://app.ticketmaster.com/discovery/v2/events.json"
-
-def fetch_events(keyword=None, city=None, start_date=None, end_date=None):
-    API_KEY = os.environ.get('TICKETMASTER_API_KEY')
-    if not API_KEY or API_KEY == "DUMMY":
-        # Dummy-Daten für Tests
-        return [
-            {
-                "title": "Test Event",
-                "start": "2025-01-01T20:00:00Z",
-                "location": "Test Location",
-                "city": "Berlin",
-                "country": "DE",
-                "url": "https://example.com",
-                "artists": "Test Artist"
-            }
-        ]
-
+def fetch_events(keyword=None, city=None, start_date=None, end_date=None, country_codes=None):
+    base_url = "https://app.ticketmaster.com/discovery/v2/events.json"
     params = {
-        "apikey": API_KEY,
-        "countryCode": "DE",
-        "classificationName": "music",
+        "apikey": os.getenv("TICKETMASTER_API_KEY"),
         "keyword": keyword,
         "city": city,
-        "startDateTime": start_date,
-        "endDateTime": end_date
+        "startDateTime": f"{start_date}T00:00:00Z" if start_date else None,
+        "endDateTime": f"{end_date}T23:59:59Z" if end_date else None,
+        "countryCode": country_codes,
+        "classificationName": "music",
+        "size": 20
     }
-    filtered_params = {k: v for k, v in params.items() if v}
-    response = requests.get(BASE_URL, params=filtered_params)
-    if response.status_code != 200:
-        raise Exception(f"Ticketmaster API error: {response.status_code} - {response.text}")
 
-    events = response.json().get("_embedded", {}).get("events", [])
-    structured_events = []
+    # Entferne None-Werte
+    clean_params = {k: v for k, v in params.items() if v}
 
-    for event in events:
-        event_data = {
-            "title": event.get("name", "No title available"),
-            "start": event.get("dates", {}).get("start", {}).get("localDate", "No date available"),
-            "location": event.get("_embedded", {}).get("venues", [{}])[0].get("name", "No venue available"),
-            "city": event.get("_embedded", {}).get("venues", [{}])[0].get("city", {}).get("name", "No city available"),
-            "country": event.get("_embedded", {}).get("venues", [{}])[0].get("country", {}).get("name", "No country available"),
-            "url": event.get("url", "No URL available")
-        }
+    try:
+        response = requests.get(base_url, params=clean_params)
+        response.raise_for_status()
+        data = response.json()
+        events = data.get("_embedded", {}).get("events", [])
 
-        # Füge den Künstlernamen hinzu, falls vorhanden
-        if "attractions" in event:
-            artists = [artist.get("name") for artist in event["attractions"]]
-            event_data["artists"] = ", ".join(artists) if artists else "No artist available"
+        # Vereinfacht zurückgeben
+        simplified = []
+        for e in events:
+            simplified.append({
+                "id": e.get("id"),
+                "title": e.get("name"),
+                "start": e.get("dates", {}).get("start", {}).get("dateTime"),
+                "location": e.get("_embedded", {}).get("venues", [{}])[0].get("name"),
+                "city": e.get("_embedded", {}).get("venues", [{}])[0].get("city", {}).get("name"),
+                "country": e.get("_embedded", {}).get("venues", [{}])[0].get("country", {}).get("name"),
+                "url": e.get("url"),
+                "artists": ", ".join([a.get("name") for a in e.get("_embedded", {}).get("attractions", [])])
+                    if "_embedded" in e and "attractions" in e["_embedded"] else ""
+            })
+        return simplified
 
-        structured_events.append(event_data)
-
-    return structured_events
+    except requests.RequestException as e:
+        print(f"Fehler beim Abrufen der Events: {e}")
+        return []
