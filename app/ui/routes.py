@@ -1,5 +1,5 @@
 from flask import Blueprint, request, render_template, session, flash, redirect, url_for
-from app.events.ticketmaster import fetch_events
+from app.events.ticketmaster import fetch_event_by_id, fetch_events
 from app.models.favorite import Favorite
 from app.ui import bp
 import requests
@@ -17,7 +17,8 @@ def login():
             'email': email,
             'password': password
         })
- 
+        print("Registrierungsantwort:", response.text)
+
         if response.status_code == 200:
             data = response.json()
             session['auth_token'] = data['token']
@@ -35,24 +36,19 @@ def register():
         name = request.form['name']
         email = request.form['email']
         password = request.form['password']
-
         # API-Aufruf zur Registrierung
         response = requests.post(f'{API_BASE}/users', json={
             'name': name,
             'email': email,
             'password': password
         })
-
         if response.status_code == 201:
-            data = response.json()
-            session['auth_token'] = data['token']
-            session['user_id'] = data['user_id']
-            flash('Registrierung erfolgreich! Du bist jetzt eingeloggt.', 'success')
-            return redirect(url_for('ui.search'))  # oder suchseite etc.
+            flash('Registrierung erfolgreich! Bitte einloggen.', 'success')
+            return redirect(url_for('ui.login'))  
         else:
             flash('Registration failed', 'danger')
-
     return render_template('users/register.html')
+
 
 @bp.route("/search", methods=["GET"])
 def search():
@@ -60,7 +56,7 @@ def search():
     user_id = session.get('user_id')
 
     if not token:
-        flash("You must be logged in", "warning")
+        flash("Bitte einloggen", "warning")
         return redirect(url_for('ui.login'))
 
     keyword = request.args.get("keyword")
@@ -79,19 +75,19 @@ def search():
         )
     else:
         events = []
-
-    # 🟡 Favoriten des Users laden (nur wenn eingeloggt)
+   
     favorite_event_ids = []
     if user_id:
-        favorites = Favorite.query.filter_by(user_id=user_id).all()
-        favorite_event_ids = [f.event_id for f in favorites]
-
+        favorite_event_ids = [
+            fav.event_id for fav in Favorite.query.filter_by(user_id=user_id).all()
+        ]
+    
     return render_template(
         "events/search.html",
         events=events,
         user_id=user_id,
         user_name=session.get("user_name"),
-        favorite_event_ids=favorite_event_ids  # 🟡 dem Template mitgeben
+        favorite_event_ids=favorite_event_ids
     )
 
 @bp.route('/logout')
@@ -100,14 +96,25 @@ def logout():
     flash('Logged out successfully.', 'info')
     return redirect(url_for('ui.login'))
 
-@bp.route('/favorites')
+@bp.route("/favorites")
 def favorites_page():
-    user_id = session.get('user_id')
+    user_id = session.get("user_id")
     if not user_id:
-        flash("Bitte einloggen, um Favoriten zu sehen.")
-        return redirect(url_for('ui.login'))
+        flash("Bitte zuerst einloggen.")
+        return redirect(url_for("ui.login"))
 
     favorites = Favorite.query.filter_by(user_id=user_id).all()
-    events = [fav.event for fav in favorites] 
+    event_ids = [f.event_id for f in favorites if f.event_id]
 
-    return render_template('users/favorites.html', events=events)
+    events = []
+    for eid in event_ids:
+        event = fetch_event_by_id(eid)  # <-- Nutze fetch_event_by_id statt fetch_events
+        if event:
+            events.append(event)
+
+    return render_template(
+        "users/favorites.html",
+        events=events,
+        favorite_event_ids=event_ids,
+        user_id=user_id
+    )

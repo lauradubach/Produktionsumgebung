@@ -18,7 +18,8 @@ class UserOut(Schema):
     id = Integer()
     name = String()
     email = String()
-    password = String()
+    password = String ()
+
 
 class LoginIn(Schema):
     email = String(required=True)
@@ -38,13 +39,12 @@ class User(db.Model):
     name = db.Column(db.String(80), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(256), nullable=False)
-    favorites = db.Column(db.String(80))
 
-    favorites = db.relationship(
-       'Favorite',
-        backref='user',
-        cascade='all, delete-orphan'
-    )
+    #favorites = db.relationship(
+     #  'Favorite',
+      #  backref='users',
+       # cascade='all, delete-orphan'
+    #)
 
     def get_favorites(self):
         return [f.event for f in self.favorites]

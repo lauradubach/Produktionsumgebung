@@ -33,7 +33,14 @@ def create_user(json_data):
     user = User(**json_data)
     db.session.add(user)
     db.session.commit()
-    return user
+    
+    token = user.generate_auth_token(600)
+
+    return {
+        'token': token,
+        'duration': 600,
+        'user_id': user.id
+    }
  
 @bp.patch('/<int:user_id>')
 @bp.auth_required(token_auth)
