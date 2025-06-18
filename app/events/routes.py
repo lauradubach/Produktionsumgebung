@@ -36,4 +36,3 @@ def get_events(query_data):
         country_codes=query_data.get("country")
     )
     return events
-

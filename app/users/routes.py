@@ -6,10 +6,8 @@ from apiflask import abort
  
 from werkzeug.security import generate_password_hash
 from flask import request
- 
-####
-## view functions
-####    
+
+
 @bp.get('/<int:user_id>')
 @bp.auth_required(token_auth)
 @bp.output(UserOut)
@@ -19,7 +17,7 @@ def get_one_user(user_id):
         abort(401, message="Unauthorized - No user found")
 
 @bp.get('/')
-@bp.auth_required(token_auth) # Protected Route
+@bp.auth_required(token_auth)
 @bp.output(UserOut(many=True))
 def get_all_users():
     current_user = token_auth.current_user
@@ -66,7 +64,6 @@ def update_user(user_id, json_data):
         token = user.generate_auth_token(600)
         return {'token': token, 'duration': 600}
 
-    # Standardantwort bei normalen Änderungen
     return {'token': '', 'duration': 0}
  
 @bp.delete('/<int:user_id>')
@@ -87,11 +84,11 @@ def delete_user(user_id):
 @bp.output(TokenOut, status_code=200)
 def login_user(json_data):
     user = User.query.filter_by(email=json_data.get('email')).first()
+
     if not user or not user.check_password(json_data.get('password')):
         abort(401, message='Invalid email or password')
 
     token = user.generate_auth_token(600)
-    # return {'token': token, 'duration': 600}
 
     return {
         'token': token,

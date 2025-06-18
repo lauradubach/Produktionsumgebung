@@ -40,12 +40,6 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(256), nullable=False)
 
-    #favorites = db.relationship(
-     #  'Favorite',
-      #  backref='users',
-       # cascade='all, delete-orphan'
-    #)
-
     def get_favorites(self):
         return [f.event for f in self.favorites]
     
@@ -59,6 +53,7 @@ class User(db.Model):
     
     def generate_auth_token(self, expires_in=600):
         exp_timestamp = int(datetime.now(timezone.utc).timestamp()) + expires_in
+        
         return encode(
             {'id': self.id, 'exp': exp_timestamp},
             current_app.config['SECRET_KEY'],

@@ -8,7 +8,7 @@ def create_app(config_class=Config):
         __name__,
         title='Music Events API',
         version='1.0',
-        docs_path='/docs',      # Swagger UI
+        docs_path='/docs',
     )
 
     app.config.from_object(config_class)

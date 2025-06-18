@@ -4,7 +4,7 @@ from app.models.favorite import Favorite
 from app.ui import bp
 import requests
 
-API_BASE = 'http://localhost:5000/'  # Adjust this to your API base URL
+API_BASE = 'http://localhost:5000/'
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -12,7 +12,6 @@ def login():
         email = request.form['email']
         password = request.form['password']
  
-        # Call your JSON API
         response = requests.post(f'{API_BASE}/users/login', json={
             'email': email,
             'password': password
@@ -36,7 +35,7 @@ def register():
         name = request.form['name']
         email = request.form['email']
         password = request.form['password']
-        # API-Aufruf zur Registrierung
+
         response = requests.post(f'{API_BASE}/users', json={
             'name': name,
             'email': email,
@@ -108,7 +107,7 @@ def favorites_page():
 
     events = []
     for eid in event_ids:
-        event = fetch_event_by_id(eid)  # <-- Nutze fetch_event_by_id statt fetch_events
+        event = fetch_event_by_id(eid)
         if event:
             events.append(event)
 

@@ -3,7 +3,7 @@
 from apiflask.security import HTTPTokenAuth
 from app.models.user import User
  
-token_auth = HTTPTokenAuth(scheme='Bearer')  # Uses Authorization: Bearer <token>
+token_auth = HTTPTokenAuth(scheme='Bearer')
  
 @token_auth.verify_token
 def verify_token(token):

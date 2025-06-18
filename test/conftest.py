@@ -1,15 +1,10 @@
 import pytest
-from app import create_app
-from app.extensions import db
-from test.create_test_data import create_test_data
 
 @pytest.fixture
-def client():
-    app = create_app()
-    app.config.update({"TESTING": True})
+def auth_token(client):
+    """Fixture to log in and return the authentication token."""
+    response = client.post("/users/login", json={'email': 'admin@example.com', 'password': 'admin123'})
+    token = response.json["token"]
+    return token
 
-    with app.app_context():
-        db.drop_all()
-        db.create_all()
-        create_test_data()
-        yield app.test_client()
+

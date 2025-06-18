@@ -8,7 +8,7 @@ class Favorite(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    event_id = db.Column(db.String(64), nullable=False)  # sollte nicht nullable sein
+    event_id = db.Column(db.String(64), nullable=False)
     
     user = db.relationship('User', backref='favorites')
 
@@ -19,7 +19,7 @@ class Favorite(db.Model):
 class FavoriteIn(Schema):
     event_id = String(required=True)
     user_id  = Integer(required=False)
-    next = String(required=False)
+    #next = String(required=False)
     is_favorite = Boolean(required=False)
 
 class FavoriteOut(Schema):
