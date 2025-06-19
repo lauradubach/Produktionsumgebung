@@ -7,8 +7,7 @@ from app.auth.token_auth import token_auth
 
 @bp.post('/')
 @bp.input(FavoriteIn, location='json')
-@bp.output(FavoriteOut, status_code=201)
-@bp.auth_required(token_auth)
+#@bp.output(FavoriteOut, status_code=201)
 def toggle_favorite(json_data):
     user_id = session.get('user_id')
     if not user_id:
@@ -41,7 +40,6 @@ def toggle_favorite(json_data):
 # Wenn der User eingeloggt ist, werden alle Favoriten aus der Datenbank geladen die diesem Nutzer gehören
 # Die geladenen Favoriten werden mithilfe von FavoriteOut (ein API-Schema) in JSON konvertiert
 @bp.route('/user', methods=['GET', 'POST'])
-@bp.auth_required(token_auth)
 def get_user_favorites():
     user_id = session.get('user_id')
     if not user_id:
@@ -54,7 +52,6 @@ def get_user_favorites():
 # Diese API-Route gibt die Details aller favorisierten Events des aktuell eingeloggten Nutzers zurück – basierend auf den in der Datenbank gespeicherten event_ids.
 @bp.route('', methods=['GET'])
 @bp.output(FavoriteOut, status_code=201)
-@bp.auth_required(token_auth)
 def get_favorite_event_details():
     user_id = session.get('user_id')
     if not user_id:

@@ -16,6 +16,8 @@ def get_one_user(user_id):
     if not current_user:
         abort(401, message="Unauthorized - No user found")
 
+    return db.get_or_404(User, user_id)
+
 @bp.get('/')
 @bp.auth_required(token_auth)
 @bp.output(UserOut(many=True))
@@ -23,6 +25,8 @@ def get_all_users():
     current_user = token_auth.current_user
     if not current_user:
         abort(401, message="Unauthorized - No user found")
+    
+    return User.query.all()
 
 @bp.post('/')
 @bp.input(UserIn, location='json')
