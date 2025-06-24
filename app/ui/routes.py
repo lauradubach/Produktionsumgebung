@@ -6,9 +6,9 @@ from app.models.favorite import Favorite
 from app.ui import bp
 import requests
 
-API_BASE = "http://msvc-bp-prod-api:5000"
+API_BASE = 'http://localhost:5000/'
 
-#'http://localhost:5000/'
+# 'http://msvc-bp-prod-api:5000'
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
