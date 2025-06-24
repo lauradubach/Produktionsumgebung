@@ -34,8 +34,8 @@ def create_app(config_class=Config):
     from app.favorites import bp as favorites_bp
     app.register_blueprint(favorites_bp, url_prefix='/favorites')
 
-    with app.app_context():
-        db.create_all()
+    #with app.app_context():
+    #    db.create_all()
 
     # Basis-Route
     @app.get('/')
