@@ -1,10 +1,13 @@
+import http
 from flask import Blueprint, request, render_template, session, flash, redirect, url_for
 from app.events.ticketmaster import fetch_event_by_id, fetch_events
 from app.models.favorite import Favorite
 from app.ui import bp
 import requests
 
-API_BASE = 'http://localhost:5000/'
+API_BASE = "http://msvc-bp-prod-api:5000"
+
+#'http://localhost:5000/'
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
