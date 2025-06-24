@@ -35,6 +35,9 @@ FROM python:3.10-slim
 # Arbeitsverzeichnis
 WORKDIR /app
 
+# Install mysql client (needed for wait-for-mysql.sh)
+RUN apk add --no-cache mysql-client
+
 # System-Pakete installieren
 RUN apt-get update && apt-get install -y --no-install-recommends \
     default-mysql-client \
