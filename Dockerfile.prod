@@ -30,13 +30,13 @@
 # ENTRYPOINT ["/app/wait-for-mysql.sh"]
 # CMD ["gunicorn", "--preload", "-w", "1", "-b", "0.0.0.0:5000", "wsgi:app"]
 
-FROM python:3.10-slim
+FROM python:3.10.0
 
 # Arbeitsverzeichnis
 WORKDIR /app
 
 # Install mysql client (needed for wait-for-mysql.sh)
-RUN apk add --no-cache mysql-client
+RUN apt-get update && apt-get install -y default-mysql-client
 
 # System-Pakete installieren
 RUN apt-get update && apt-get install -y --no-install-recommends \
