@@ -1,31 +1,65 @@
-# Base python package
+# # Base python package
+# FROM python:3.10.0-alpine
+
+# # Working directory
+# WORKDIR /app
+
+# # Copy the dependencies
+# COPY requirements.txt requirements.txt
+
+# # Install requirements & install Gunicorn  
+# RUN pip install -r requirements.txt && pip install gunicorn==21.2
+
+# # for flask web server
+# EXPOSE 5000
+
+# # add files
+# # ADD . /app
+
+# # This is the runtime command for the container
+# # Add below line if not using docker-compose
+# # CMD gunicorn --preload -w 1 -b 0.0.0.0:5000 wsgi:app
+
+# # Kopiere gesamten App-Code inkl. wait-for-mysql.sh
+# COPY . /app
+
+# # Stelle sicher, dass das Script ausführbar ist
+# RUN chmod +x /app/wait-for-mysql.sh
+
+# # Warten auf Datenbank, dann App starten
+# ENTRYPOINT ["/app/wait-for-mysql.sh"]
+# CMD ["gunicorn", "--preload", "-w", "1", "-b", "0.0.0.0:5000", "wsgi:app"]
+
 FROM python:3.10.0-alpine
 
-# Working directory
+# Arbeitsverzeichnis
 WORKDIR /app
 
-# Copy the dependencies
-COPY requirements.txt requirements.txt
+# System-Pakete installieren, u.a. mysql-client (für mysqladmin im wait script)
+RUN apk update && apk add --no-cache \
+    mysql-client \
+    bash \
+    curl \
+    gcc \
+    musl-dev \
+    libffi-dev \
+    build-base \
+    linux-headers
 
-# Install requirements & install Gunicorn  
+# Abhängigkeiten installieren
+COPY requirements.txt .
 RUN pip install -r requirements.txt && pip install gunicorn==21.2
 
-# for flask web server
-EXPOSE 5000
+# Warten auf MySQL
+COPY wait-for-mysql.sh /wait-for-mysql.sh
+RUN chmod +x /wait-for-mysql.sh
 
-# add files
-# ADD . /app
-
-# This is the runtime command for the container
-# Add below line if not using docker-compose
-# CMD gunicorn --preload -w 1 -b 0.0.0.0:5000 wsgi:app
-
-# Kopiere gesamten App-Code inkl. wait-for-mysql.sh
+# App-Dateien
 COPY . /app
 
-# Stelle sicher, dass das Script ausführbar ist
-RUN chmod +x /app/wait-for-mysql.sh
+# Port freigeben
+EXPOSE 5000
 
-# Warten auf Datenbank, dann App starten
-ENTRYPOINT ["/app/wait-for-mysql.sh"]
+# Startkonfiguration
+ENTRYPOINT ["/wait-for-mysql.sh"]
 CMD ["gunicorn", "--preload", "-w", "1", "-b", "0.0.0.0:5000", "wsgi:app"]
