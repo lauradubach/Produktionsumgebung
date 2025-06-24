@@ -10,7 +10,8 @@ services:
     container_name: msvc-bp-prod-api
     restart: always
     environment:
-      - DATABASE_URI=mysql+mysqlconnector://root:${DB_ROOT_PASSWORD}@msvc-bp-prod-db:3306/msvc-prod
+      # - DATABASE_URI=mysql+mysqlconnector://root:${DB_ROOT_PASSWORD}@msvc-bp-prod-db:3306/msvc-prod
+      - DATABASE_URI=mysql+mysqlconnector://root:${DB_ROOT_PASSWORD}@msvc-bp-prod-db:3306/msvc-prod?ssl_disabled=true
     ports:
       - 80:5000
     depends_on:
