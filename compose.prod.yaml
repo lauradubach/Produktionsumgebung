@@ -12,6 +12,7 @@ services:
     environment:
       # - DATABASE_URI=mysql+mysqlconnector://root:${DB_ROOT_PASSWORD}@msvc-bp-prod-db:3306/msvc-prod
       - DATABASE_URI=mysql+mysqlconnector://root:${DB_ROOT_PASSWORD}@msvc-bp-prod-db:3306/msvc-prod?ssl_disabled=true
+      - DB_HOST=msvc-bp-prod-db
     ports:
       - 80:5000
     depends_on:

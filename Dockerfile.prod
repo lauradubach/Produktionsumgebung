@@ -14,8 +14,18 @@ RUN pip install -r requirements.txt && pip install gunicorn==21.2
 EXPOSE 5000
 
 # add files
-ADD . /app
+# ADD . /app
 
 # This is the runtime command for the container
 # Add below line if not using docker-compose
-CMD gunicorn --preload -w 1 -b 0.0.0.0:5000 wsgi:app
+# CMD gunicorn --preload -w 1 -b 0.0.0.0:5000 wsgi:app
+
+# Kopiere gesamten App-Code inkl. wait-for-mysql.sh
+COPY . /app
+
+# Stelle sicher, dass das Script ausführbar ist
+RUN chmod +x /app/wait-for-mysql.sh
+
+# Warten auf Datenbank, dann App starten
+ENTRYPOINT ["/app/wait-for-mysql.sh"]
+CMD ["gunicorn", "--preload", "-w", "1", "-b", "0.0.0.0:5000", "wsgi:app"]
