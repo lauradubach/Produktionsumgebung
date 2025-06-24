@@ -65,5 +65,5 @@ EXPOSE 5000
 # Startkonfiguration
 ENTRYPOINT ["/wait-for-mysql.sh"]
 #CMD ["gunicorn", "--preload", "-w", "1", "-b", "0.0.0.0:5000", "wsgi:app"]
-CMD ["gunicorn", "--timeout", "180", "-w", "1", "-b", "0.0.0.0:5000", "wsgi:app"]
+CMD ["gunicorn", "-b", "0.0.0.0:5000", "wsgi:app", "--workers=1", "--timeout=300", "--log-level=debug"]
 
