@@ -1,3 +1,4 @@
+import email
 import http
 from flask import Blueprint, request, render_template, session, flash, redirect, url_for
 from app.events.ticketmaster import fetch_event_by_id, fetch_events
@@ -14,7 +15,10 @@ def login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
- 
+
+        print("POST to", f'{API_BASE}/users/login')
+        print("Request Payload:", {'email': email, 'password': password})
+
         response = requests.post(f'{API_BASE}/users/login', json={
             'email': email,
             'password': password
