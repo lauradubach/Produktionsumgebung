@@ -25,9 +25,10 @@ def login_post(form_data=None):
     if data:
         session['auth_token'] = data['token']
         session['user_id'] = data['user_id']
-        flash('Login successful', 'success')
+        flash('Login erfolgreich', 'success')
         return redirect(url_for('ui.search'))
     else:
+        flash('Login fehlgeschlagen. Bitte E-Mail und Passwort kontrollieren.', 'danger')
         return redirect(url_for('ui.login_get'))
 
 
@@ -95,7 +96,7 @@ def search():
 @bp.route('/logout')
 def logout():
     session.clear()
-    flash('Logged out successfully.', 'info')
+    flash('Erfolgreich Ausgeloggt.', 'info')
     return redirect(url_for('ui.login_get'))
 
 @bp.route("/favorites")
