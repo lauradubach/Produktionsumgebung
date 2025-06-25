@@ -5,7 +5,7 @@ from app.events.ticketmaster import fetch_event_by_id, fetch_events
 from app.models.favorite import Favorite
 from app.ui import bp
 import requests
-from app.ui.routes import login_user
+from app.users.routes import login_user
 
 API_BASE = 'http://localhost:5000/'
 
