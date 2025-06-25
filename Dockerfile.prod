@@ -1,71 +1,21 @@
-# # Base python package
-# FROM python:3.10.0-alpine
+# Base python package
+FROM python:3.10.0-alpine
 
-# # Working directory
-# WORKDIR /app
-
-# # Copy the dependencies
-# COPY requirements.txt requirements.txt
-
-# # Install requirements & install Gunicorn  
-# RUN pip install -r requirements.txt && pip install gunicorn==21.2
-
-# # for flask web server
-# EXPOSE 5000
-
-# # add files
-# # ADD . /app
-
-# # This is the runtime command for the container
-# # Add below line if not using docker-compose
-# # CMD gunicorn --preload -w 1 -b 0.0.0.0:5000 wsgi:app
-
-# # Kopiere gesamten App-Code inkl. wait-for-mysql.sh
-# COPY . /app
-
-# # Stelle sicher, dass das Script ausführbar ist
-# RUN chmod +x /app/wait-for-mysql.sh
-
-# # Warten auf Datenbank, dann App starten
-# ENTRYPOINT ["/app/wait-for-mysql.sh"]
-# CMD ["gunicorn", "--preload", "-w", "1", "-b", "0.0.0.0:5000", "wsgi:app"]
-
-FROM python:3.10.0
-
-# Arbeitsverzeichnis
+# Working directory
 WORKDIR /app
 
-# Install mysql client (needed for wait-for-mysql.sh)
-RUN apt-get update && apt-get install -y default-mysql-client
+# Copy the dependencies
+COPY requirements.txt requirements.txt
 
-# System-Pakete installieren
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    default-mysql-client \
-    bash \
-    curl \
-    gcc \
-    build-essential \
-    libffi-dev \
-    && rm -rf /var/lib/apt/lists/*
+# Install requirements & install Gunicorn  
+RUN pip install -r requirements.txt && pip install gunicorn==21.2
 
-# Python requirements installieren
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt && pip install gunicorn==21.2
-
-# Wait-Skript hinzufügen
-COPY wait-for-mysql.sh /wait-for-mysql.sh
-RUN chmod +x /wait-for-mysql.sh
-
-# App-Code kopieren
-COPY . /app
-
-# Port freigeben
+# for flask web server
 EXPOSE 5000
 
-# Startkonfiguration
-ENTRYPOINT ["/wait-for-mysql.sh"]
-#CMD ["gunicorn", "--preload", "-w", "1", "-b", "0.0.0.0:5000", "wsgi:app"]
-CMD ["gunicorn", "--capture-output", "--log-level", "debug", "-w", "1", "-b", "0.0.0.0:5000", "wsgi:app"]
+# add files
+ADD . /app
 
-
-
+# This is the runtime command for the container
+# Add below line if not using docker-compose
+CMD ["gunicorn", "--preload", "-w", "1", "-b", "0.0.0.0:5000", "wsgi:app"]
