@@ -11,6 +11,7 @@ services:
     restart: always
     environment:
       - DATABASE_URI=mysql+mysqlconnector://root:${DB_ROOT_PASSWORD}@msvc-bp-prod-db:3306/msvc-prod
+      - TICKETMASTER_API_KEY=${TICKETMASTER_API_KEY}
     ports:
       - 80:5000
     depends_on:
