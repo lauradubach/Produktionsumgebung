@@ -2,8 +2,10 @@ from app.users import bp
 from app.extensions import db
 from app.models.user import User, UserIn, UserOut, LoginIn, TokenOut
 from app.auth.token_auth import token_auth
+from app.auth.auth_service import authenticate_user
 from apiflask import abort
  
+
 from werkzeug.security import generate_password_hash
 from flask import request
 
@@ -92,15 +94,9 @@ def delete_user(user_id):
 @bp.input(LoginIn, location='json')
 @bp.output(TokenOut, status_code=200)
 def login_user(json_data):
-    user = User.query.filter_by(email=json_data.get('email')).first()
+    result = authenticate_user(json_data.get('email'), json_data.get('password'))
 
-    if not user or not user.check_password(json_data.get('password')):
+    if not result:
         abort(401, message='Invalid email or password')
 
-    token = user.generate_auth_token(600)
-
-    return {
-        'token': token,
-        'duration': 600,
-        'user_id': user.id
-    }
+    return result

@@ -1,43 +1,39 @@
 import email
 import http
 from flask import Blueprint, request, render_template, session, flash, redirect, url_for
+from app.models.user import User, UserIn, UserOut, LoginIn, TokenOut
 from app.events.ticketmaster import fetch_event_by_id, fetch_events
 from app.models.favorite import Favorite
 from app.ui import bp
 import requests
-from app.users.routes import login_user
+from app.auth.auth_service import authenticate_user
 
-API_BASE = 'http://localhost:5000/'
 
-# 'http://msvc-bp-prod-api:5000'
-
-@bp.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-
-        print("POST to", f'{API_BASE}/users/login')
-        print("Request Payload:", {'email': email, 'password': password})
-
-        response = login_user(email, password)
-
-        # response = requests.post(f'{API_BASE}/users/login', json={
-        #     'email': email,
-        #     'password': password
-        # }, timeout=5)
-        print("Registrierungsantwort:", response.text)
-
-        if response.status_code == 200:
-            data = response.json()
-            session['auth_token'] = data['token']
-            session['user_id'] = data['user_id']
-            flash('Login successful', 'success')
-            return redirect(url_for('ui.search'))
-        else:
-            flash('Invalid credentials', 'danger')
- 
+@bp.route('/login', methods=['GET'])
+def login_get():
     return render_template('users/login.html')
+
+
+@bp.route('/login', methods=['POST'])
+@bp.input(LoginIn, location='form')
+def login_post(form_data=None):
+
+    email = form_data['email']
+    password = form_data['password']
+
+    # print("POST to", f'{API_BASE}/users/login')
+    # print("Request Payload:", {'email': email, 'password': password})
+
+    data = authenticate_user(email, password)
+    if data:
+        session['auth_token'] = data['token']
+        session['user_id'] = data['user_id']
+        flash('Login successful', 'success')
+        return redirect(url_for('ui.search'))
+    else:
+        return redirect(url_for('ui.login_get'))
+
+    
 
 @bp.route('/register', methods=['GET', 'POST'])
 def register():
