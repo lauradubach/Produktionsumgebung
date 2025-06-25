@@ -49,7 +49,7 @@ def register():
         })
         if response.status_code == 201:
             flash('Registrierung erfolgreich! Bitte einloggen.', 'success')
-            return redirect(url_for('ui.login'))  
+            return redirect(url_for('ui.login_get'))  
         else:
             flash('Registration failed', 'danger')
     return render_template('users/register.html')
@@ -62,7 +62,7 @@ def search():
 
     if not token:
         flash("Bitte einloggen", "warning")
-        return redirect(url_for('ui.login'))
+        return redirect(url_for('ui.login_get'))
 
     keyword = request.args.get("keyword")
     city = request.args.get("city")
@@ -99,14 +99,14 @@ def search():
 def logout():
     session.clear()
     flash('Logged out successfully.', 'info')
-    return redirect(url_for('ui.login'))
+    return redirect(url_for('ui.login_get'))
 
 @bp.route("/favorites")
 def favorites_page():
     user_id = session.get("user_id")
     if not user_id:
         flash("Bitte zuerst einloggen.")
-        return redirect(url_for("ui.login"))
+        return redirect(url_for("ui.login_get"))
 
     favorites = Favorite.query.filter_by(user_id=user_id).all()
     event_ids = [f.event_id for f in favorites if f.event_id]

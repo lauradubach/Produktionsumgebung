@@ -44,7 +44,7 @@ def get_user_favorites():
     user_id = session.get('user_id')
     if not user_id:
         flash('Nicht eingeloggt.')
-        return redirect(url_for('ui.login'))
+        return redirect(url_for('ui.login_get'))
     
     favorites = Favorite.query.filter_by(user_id=user_id).all()
     return FavoriteOut(many=True).dump(favorites), 200
