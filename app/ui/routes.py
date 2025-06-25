@@ -5,6 +5,7 @@ from app.events.ticketmaster import fetch_event_by_id, fetch_events
 from app.models.favorite import Favorite
 from app.ui import bp
 import requests
+from app.ui.routes import login_user
 
 API_BASE = 'http://localhost:5000/'
 
@@ -19,10 +20,12 @@ def login():
         print("POST to", f'{API_BASE}/users/login')
         print("Request Payload:", {'email': email, 'password': password})
 
-        response = requests.post(f'{API_BASE}/users/login', json={
-            'email': email,
-            'password': password
-        })
+        response = login_user(email, password)
+
+        # response = requests.post(f'{API_BASE}/users/login', json={
+        #     'email': email,
+        #     'password': password
+        # }, timeout=5)
         print("Registrierungsantwort:", response.text)
 
         if response.status_code == 200:
