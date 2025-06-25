@@ -7,6 +7,7 @@ from app.models.favorite import Favorite
 from app.ui import bp
 import requests
 from app.auth.auth_service import authenticate_user
+from app.extensions import db
 
 
 @bp.route('/login', methods=['GET'])
@@ -33,26 +34,26 @@ def login_post(form_data=None):
     else:
         return redirect(url_for('ui.login_get'))
 
-    
 
-@bp.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        name = request.form['name']
-        email = request.form['email']
-        password = request.form['password']
-
-        response = requests.post(f'{API_BASE}/users', json={
-            'name': name,
-            'email': email,
-            'password': password
-        })
-        if response.status_code == 201:
-            flash('Registrierung erfolgreich! Bitte einloggen.', 'success')
-            return redirect(url_for('ui.login_get'))  
-        else:
-            flash('Registration failed', 'danger')
+@bp.route('/register', methods=['GET'])
+def register_get():
     return render_template('users/register.html')
+
+@bp.route('/register', methods=['POST'])
+@bp.input(UserIn, location='form')
+def register_post(form_data=None):
+
+    name = form_data['name']
+    email = form_data['email']
+    password = form_data['password']
+    
+    user = User(**form_data)
+    db.session.add(user)
+    db.session.commit()
+
+    flash('Registrierung erfolgreich! Bitte einloggen.', 'success')
+    return redirect(url_for('ui.login_get'))
+        
 
 
 @bp.route("/search", methods=["GET"])
