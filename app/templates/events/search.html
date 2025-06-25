@@ -207,7 +207,7 @@
     <a href="{{ url_for('ui.logout') }}" class="btn-action btn-logout">🚪 Logout</a>
 </div>
 
-<form method="get">
+<form method="get" action="{{ url_for('ui.search') }}">
     <input type="text" name="keyword" placeholder="Genre oder Stichwort" value="{{ request.args.get('keyword', '') }}">
     <input type="text" name="city" placeholder="Stadt" value="{{ request.args.get('city', '') }}">
     <input type="text" name="country" placeholder="Ländercode (z.B. DE, FR, IT)" value="{{ request.args.get('country', '') }}">

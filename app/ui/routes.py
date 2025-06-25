@@ -5,7 +5,6 @@ from app.models.user import User, UserIn, UserOut, LoginIn, TokenOut
 from app.events.ticketmaster import fetch_event_by_id, fetch_events
 from app.models.favorite import Favorite
 from app.ui import bp
-import requests
 from app.auth.auth_service import authenticate_user
 from app.extensions import db
 
@@ -21,9 +20,6 @@ def login_post(form_data=None):
 
     email = form_data['email']
     password = form_data['password']
-
-    # print("POST to", f'{API_BASE}/users/login')
-    # print("Request Payload:", {'email': email, 'password': password})
 
     data = authenticate_user(email, password)
     if data:

@@ -1,5 +1,6 @@
 import os
 import requests
+from urllib.parse import urlencode
 
 API_KEY = os.getenv("TICKETMASTER_API_KEY")
 
@@ -8,6 +9,8 @@ def fetch_event_by_id(event_id):
     url = f"https://app.ticketmaster.com/discovery/v2/events/{event_id}.json"
     params = {"apikey": API_KEY}
     
+    print(f'query parameters: {params}')
+
     try:
         response = requests.get(url, params=params)
         response.raise_for_status()
@@ -33,8 +36,6 @@ def fetch_event_by_id(event_id):
 
 # Sucht mehrere Events per Keyword
 def fetch_events(keyword=None, city=None, country_codes=None, start_date=None, end_date=None):
-    import os
-    import requests
 
     base_url = "https://app.ticketmaster.com/discovery/v2/events.json"
     params = {
@@ -42,6 +43,9 @@ def fetch_events(keyword=None, city=None, country_codes=None, start_date=None, e
         "classificationName": "music",
         "size": 20,
     }
+
+    full_url = f"{base_url}?{urlencode(params)}"
+    print(f"Full request URL: {full_url}")
 
     if keyword:
         params["keyword"] = keyword
