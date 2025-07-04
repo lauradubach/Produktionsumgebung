@@ -1,18 +1,22 @@
-from datetime import datetime, timezone
+# Definiert das User-Datenbankmodell, Eingabe-/Ausgabe-Schemas und Authentifizierungslogik.
+
+from apiflask import Schema
 from flask import current_app
 from app.extensions import db
-from apiflask import Schema
+from datetime import datetime, timezone
 from apiflask.fields import Integer, String
 from apiflask.validators import Length, Email, Regexp, OneOf
-from werkzeug.security import generate_password_hash, check_password_hash
 from jwt import encode, decode, ExpiredSignatureError, InvalidTokenError
+from werkzeug.security import generate_password_hash, check_password_hash
 
-#### Schemas für OpenAPI und Validierung ####
+# Eingabeschema für neue Benutzer mit Validierung von Name, Email und Passwort.
 
 class UserIn(Schema):
     name = String(required=True, validate=Length(0, 32))
     email = String(required=True)
     password = String(required=True, validate=Length(0, 128))
+
+# Ausgabeschema für Benutzerdaten in API-Antworten.
 
 class UserOut(Schema):
     id = Integer()
@@ -20,17 +24,20 @@ class UserOut(Schema):
     email = String()
     password = String ()
 
+# Eingabeschema für Login-Daten (Email und Passwort).
 
 class LoginIn(Schema):
     email = String(required=True)
     password = String(required=True)
- 
+
+# Ausgabeschema für Authentifizierungs-Token mit Ablaufdauer und Nutzer-ID.
+
 class TokenOut(Schema):
     token = String()
     duration = Integer()
     user_id = Integer()
 
-#### Datenbankmodell ####
+# Datenbankmodell für Benutzer mit Passwort-Hashing und Token-Authentifizierung.
 
 class User(db.Model):
     __tablename__ = 'users'

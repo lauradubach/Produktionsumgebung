@@ -1,4 +1,5 @@
-name: blueprint-flask-test
+# Docker-Compose Konfiguration für Testumgebung:
+# Definiert den Service für die Flask API mit Test-Dockerfile und Umgebungsvariablenname: blueprint-flask-test
 
 services:
 

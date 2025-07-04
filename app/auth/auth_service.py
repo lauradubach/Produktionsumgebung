@@ -1,4 +1,4 @@
-# app/services/auth_service.py
+# Authentifiziert einen Benutzer anhand von E-Mail und Passwort und gibt bei Erfolg ein Token zurück.
 
 from app.models.user import User
 

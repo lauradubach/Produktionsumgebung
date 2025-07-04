@@ -1,10 +1,13 @@
-from apiflask import APIBlueprint
+# Definiert eine API-Route zur Abfrage von Event-Daten mit optionalen Filterparametern und strukturierter JSON-Ausgabe.
+
 from flask import request
 from app.events import bp
-from app.events.ticketmaster import fetch_events
+from apiflask import APIBlueprint
 from marshmallow import Schema, fields
+from app.events.ticketmaster import fetch_events
 
-# Input-Validierung
+# Definiert das Schema zur Validierung von Abfrageparametern in der URL
+
 class EventQuerySchema(Schema):
     city = fields.String(required=False, metadata={"description": "Filter by city"})
     keyword = fields.String(required=False, metadata={"description": "Filter by keyword"})
@@ -12,7 +15,8 @@ class EventQuerySchema(Schema):
     end_date = fields.String(required=False, metadata={"description": "End date in ISO format (YYYY-MM-DD)"})
     country = fields.String(required=False, metadata={"description": "Filter by country code (e.g. DE, FR, IT)"})
 
-# JSON-Ausgabeformat
+# Definiert das Schema für die strukturierte JSON-Ausgabe der Event-Daten
+
 class EventResponseSchema(Schema):
     id = fields.String()
     title = fields.String()
@@ -23,7 +27,8 @@ class EventResponseSchema(Schema):
     url = fields.String()
     artists = fields.String(required=False)
 
-# API-Route: JSON-Antwort
+# Definiert eine GET-Route, die Events basierend auf optionalen Filtern zurückliefert
+
 @bp.get("/")
 @bp.input(EventQuerySchema, location="query")
 @bp.output(EventResponseSchema(many=True))

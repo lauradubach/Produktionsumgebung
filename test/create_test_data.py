@@ -1,10 +1,11 @@
+# Erstellt Beispiel-Daten für Tests: Nutzer und Favoriten in der Datenbank anlegen
+
 from app.extensions import db
 from app.models.user import User
 from app.models.favorite import Favorite
 
-# Hilfsfunktion (Testdaten erstellen, Tabellen erstellen)
 def create_test_data():
-    db.drop_all()  # Alle Tabellen und Daten löschen
+    db.drop_all()
     db.create_all()
 
     # Beispielnutzer
@@ -38,9 +39,9 @@ def create_test_data():
         password='test123',
     )
     db.session.add(user_fav_ref)
-    db.session.flush()  # damit user_fav_ref.id gesetzt ist
+    db.session.flush()
 
-    # Beispiel-Favoriten (event_id fiktiv)
+    # Beispiel-Favoriten
     favorites = [
         Favorite(user_id=user_fav_ref.id, event_id='E001'),
         Favorite(user_id=user_fav_ref.id, event_id='E002'),

@@ -1,3 +1,5 @@
+# Testet die Events-API mit Filtern und überprüft den erfolgreichen Antwortstatus und das Antwortformat.
+
 from test import client
 
 def test_get_events(client):

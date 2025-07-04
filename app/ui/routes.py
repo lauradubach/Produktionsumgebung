@@ -1,18 +1,22 @@
-import email
-import http
-from flask import Blueprint, request, render_template, session, flash, redirect, url_for
-from app.models.user import User, UserIn, UserOut, LoginIn, TokenOut
-from app.events.ticketmaster import fetch_event_by_id, fetch_events
-from app.models.favorite import Favorite
-from app.ui import bp
-from app.auth.auth_service import authenticate_user
-from app.extensions import db
+# UI-Blueprint mit Routen für Benutzer-Authentifizierung, Registrierung, Event-Suche, Favoritenverwaltung und Logout.
 
+import http
+import email
+from app.ui import bp
+from app.extensions import db
+from app.models.favorite import Favorite
+from app.auth.auth_service import authenticate_user
+from app.events.ticketmaster import fetch_event_by_id, fetch_events
+from app.models.user import User, UserIn, UserOut, LoginIn, TokenOut
+from flask import Blueprint, request, render_template, session, flash, redirect, url_for
+
+# Zeigt die Login-Seite an.
 
 @bp.route('/login', methods=['GET'])
 def login_get():
     return render_template('users/login.html')
 
+# Verarbeitet das Login-Formular und authentifiziert den Nutzer.
 
 @bp.route('/login', methods=['POST'])
 @bp.input(LoginIn, location='form')
@@ -31,10 +35,13 @@ def login_post(form_data=None):
         flash('Login fehlgeschlagen. Bitte E-Mail und Passwort kontrollieren.', 'danger')
         return redirect(url_for('ui.login_get'))
 
+# Zeigt die Registrierungsseite an.
 
 @bp.route('/register', methods=['GET'])
 def register_get():
     return render_template('users/register.html')
+
+# Verarbeitet das Registrierungsformular und legt einen neuen Nutzer an.
 
 @bp.route('/register', methods=['POST'])
 @bp.input(UserIn, location='form')
@@ -51,7 +58,7 @@ def register_post(form_data=None):
     flash('Registrierung erfolgreich! Bitte einloggen.', 'success')
     return redirect(url_for('ui.login_get'))
         
-
+# Zeigt die Event-Suchseite an und gibt Events zurück, falls Suchparameter vorhanden sind.
 
 @bp.route("/search", methods=["GET"])
 def search():
@@ -93,11 +100,15 @@ def search():
         favorite_event_ids=favorite_event_ids
     )
 
+# Löscht die aktuelle Sitzung und loggt den Nutzer aus.
+
 @bp.route('/logout')
 def logout():
     session.clear()
     flash('Erfolgreich Ausgeloggt.', 'info')
     return redirect(url_for('ui.login_get'))
+
+# Zeigt die Favoriten-Seite des aktuell angemeldeten Nutzers an.
 
 @bp.route("/favorites")
 def favorites_page():

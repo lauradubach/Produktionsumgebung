@@ -1,8 +1,12 @@
-from apiflask import APIFlask
-from flask import url_for, redirect
+# Erstellt und konfiguriert die API-Anwendung mit Blueprints und Datenbankanbindung.
+
 from config import Config
 from app.extensions import db
+from apiflask import APIFlask
 from flask_migrate import Migrate
+from flask import url_for, redirect
+
+# Application Factory: Erstellt und konfiguriert die API-Flask-Anwendung inklusive Blueprints und Datenbank
 
 def create_app(config_class=Config):
     app = APIFlask(

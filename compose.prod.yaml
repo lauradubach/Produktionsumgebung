@@ -1,3 +1,6 @@
+# Docker-Compose Konfiguration für Produktionsumgebung:
+# Definiert Services für die Flask API und MySQL Datenbank mit Umgebungsvariablen, Ports und Healthchecks
+
 name: blueprint-flask-prod
 
 services:

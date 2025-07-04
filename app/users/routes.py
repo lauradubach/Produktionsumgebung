@@ -1,15 +1,16 @@
+# API-Blueprint für Benutzerverwaltung mit CRUD-Operationen und Authentifizierung.
+
 from app.users import bp
+from flask import request
+from apiflask import abort
 from app.extensions import db
-from app.models.user import User, UserIn, UserOut, LoginIn, TokenOut
 from app.auth.token_auth import token_auth
 from app.auth.auth_service import authenticate_user
-from apiflask import abort
- 
-
 from werkzeug.security import generate_password_hash
-from flask import request
+from app.models.user import User, UserIn, UserOut, LoginIn, TokenOut
 
-#  Holt einen einzelnen Nutzer anhand der ID, wenn ein gültiger Token vorhanden ist.
+# Gibt einen einzelnen Nutzer zurück, wenn ein gültiger Token vorliegt.
+
 @bp.get('/<int:user_id>')
 @bp.auth_required(token_auth)
 @bp.output(UserOut)
@@ -21,6 +22,7 @@ def get_one_user(user_id):
     return db.get_or_404(User, user_id)
 
 # Gibt eine Liste aller Nutzer zurück, wenn ein gültiger Token vorhanden ist.
+
 @bp.get('/')
 @bp.auth_required(token_auth)
 @bp.output(UserOut(many=True))
@@ -32,6 +34,7 @@ def get_all_users():
     return User.query.all()
 
 # Erstellt einen neuen Nutzer mit den übermittelten Daten und gibt ein Auth-Token zurück.
+
 @bp.post('/')
 @bp.input(UserIn, location='json')
 @bp.output(UserOut, status_code=201)
@@ -48,7 +51,8 @@ def create_user(json_data):
         'user_id': user.id
     }
 
-# Aktualisiert ausgewählte Nutzerdaten und gibt ggf. ein neues Token zurück, wenn das Passwort geändert wurde.
+# Aktualisiert Nutzerdaten und gibt ggf. ein neues Token bei Passwortänderung zurück.
+
 @bp.patch('/<int:user_id>')
 @bp.auth_required(token_auth)
 @bp.input(UserIn(partial=True), location='json')
@@ -75,21 +79,8 @@ def update_user(user_id, json_data):
 
     return {'token': '', 'duration': 0}
 
-# Löscht einen Nutzer anhand der ID, wenn ein gültiger Token vorhanden ist.
-@bp.delete('/<int:user_id>')
-@bp.auth_required(token_auth)
-@bp.output({}, status_code=204)
-def delete_user(user_id):
-    current_user = token_auth.current_user
-    if not current_user:
-        abort(401, message="Unauthorized - No user found")
-
-    user = db.get_or_404(User, user_id)
-    db.session.delete(user)
-    db.session.commit()
-    return 'User succesfully deleted'
-
 # Authentifiziert den Nutzer anhand von E-Mail und Passwort und gibt ein Auth-Token zurück.
+
 @bp.post('/login')
 @bp.input(LoginIn, location='json')
 @bp.output(TokenOut, status_code=200)

@@ -1,9 +1,10 @@
+# Importiert notwendige Module für das Test-Setup der Flask-Anwendung
+
 import pytest
 from app import create_app
 from test.create_test_data import create_test_data
 
-
-# Initialize the testing environment
+# Initialisiert die Testumgebung für die Flask-App mit Testdaten
 
 @pytest.fixture
 def client():

@@ -1,3 +1,5 @@
+# Kommuniziert mit der Ticketmaster API, um entweder ein einzelnes Event per ID oder mehrere Events anhand von Filtern abzurufen.
+
 import os
 import requests
 from urllib.parse import urlencode
@@ -5,6 +7,7 @@ from urllib.parse import urlencode
 API_KEY = os.getenv("TICKETMASTER_API_KEY")
 
 # Holt ein einzelnes Event anhand der Event-ID
+
 def fetch_event_by_id(event_id):
     url = f"https://app.ticketmaster.com/discovery/v2/events/{event_id}.json"
     params = {"apikey": API_KEY}
@@ -33,8 +36,8 @@ def fetch_event_by_id(event_id):
         print(f"Fehler beim Abrufen des Events {event_id}: {e}")
         return None
 
-
 # Sucht mehrere Events per Keyword
+
 def fetch_events(keyword=None, city=None, country_codes=None, start_date=None, end_date=None):
 
     base_url = "https://app.ticketmaster.com/discovery/v2/events.json"

@@ -1,3 +1,6 @@
+# Docker-Compose Konfiguration für Entwicklungsumgebung:
+# Definiert Services für Flask API mit Hot-Reload und MySQL Datenbank, inklusive Volume-Mount und Healthchecks
+
 name: blueprint-flask-dev
 
 services:

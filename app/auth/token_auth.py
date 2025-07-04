@@ -1,7 +1,7 @@
-# app/auth/token_auth.py
- 
-from apiflask.security import HTTPTokenAuth
+# Richtet eine Token-basierte Authentifizierung ein und prüft, ob ein übermitteltes Token gültig ist.
+
 from app.models.user import User
+from apiflask.security import HTTPTokenAuth
  
 token_auth = HTTPTokenAuth(scheme='Bearer')
  
