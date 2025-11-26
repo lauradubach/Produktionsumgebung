@@ -38,10 +38,17 @@ jobs:
         run: |
           git config --global user.email "ci@github.com"
           git config --global user.name "CI Bot"
+
+          # Config-Repo klonen
           git clone https://x-access-token:${GIT_TOKEN}@github.com/lauradubach/Minikube-Config.git /tmp/config
           cd /tmp/config
-          # Beispiel: Ersetze IMAGE_PLACEHOLDER in k8s/deployment.yaml
-          sed -i "s|ghcr.io/lauradubach/musiceventfinder:.*|ghcr.io/lauradubach/musiceventfinder:${GITHUB_SHA}|g" k8s/deployment.yaml
-          git add k8s/deployment.yaml
-          git commit -m "ci: bump image to $GITHUB_SHA"
+
+          # Image in Deployment YAML ersetzen
+          sed -i "s|ghcr.io/lauradubach/musiceventfinder:.*|ghcr.io/lauradubach/musiceventfinder:${GITHUB_SHA}|g" msvc-bp-prod-api-deployment.yaml
+
+          # Commit erstellen
+          git add msvc-bp-prod-api-deployment.yaml
+          git commit -m "ci: bump image to ${GITHUB_SHA}"
+
+          # Änderungen pushen
           git push origin HEAD:main
