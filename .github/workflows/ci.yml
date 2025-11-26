@@ -38,7 +38,7 @@ jobs:
         run: |
           git config --global user.email "ci@github.com"
           git config --global user.name "CI Bot"
-          git clone https://x-access-token:${GIT_TOKEN}@github.com/lauradubach/musiceventfinder-config.git /tmp/config
+          git clone https://x-access-token:${GIT_TOKEN}@github.com/lauradubach/Minikube-Config.git /tmp/config
           cd /tmp/config
           # Beispiel: Ersetze IMAGE_PLACEHOLDER in k8s/deployment.yaml
           sed -i "s|ghcr.io/lauradubach/musiceventfinder:.*|ghcr.io/lauradubach/musiceventfinder:${GITHUB_SHA}|g" k8s/deployment.yaml
