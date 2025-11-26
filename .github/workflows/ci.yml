@@ -28,27 +28,6 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: ghcr.io/lauradubach/musiceventfinder:${{ github.sha }}
+          tags: ghcr.io/lauradubach/musiceventfinder:latest
           build-args: |
             NODE_ENV=production
-
-      - name: Update manifests repo with new image tag
-        env:
-          GIT_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config --global user.email "ci@github.com"
-          git config --global user.name "CI Bot"
-
-          # Config-Repo klonen
-          git clone https://x-access-token:${GIT_TOKEN}@github.com/lauradubach/Minikube-Config.git /tmp/config
-          cd /tmp/config
-
-          # Image in Deployment YAML ersetzen
-          sed -i "s|ghcr.io/lauradubach/musiceventfinder:.*|ghcr.io/lauradubach/musiceventfinder:${GITHUB_SHA}|g" msvc-bp-prod-api-deployment.yaml
-
-          # Commit erstellen
-          git add msvc-bp-prod-api-deployment.yaml
-          git commit -m "ci: bump image to ${GITHUB_SHA}"
-
-          # Änderungen pushen
-          git push origin HEAD:main
