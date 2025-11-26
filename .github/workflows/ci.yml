@@ -41,7 +41,7 @@ jobs:
           git clone https://x-access-token:${GIT_TOKEN}@github.com/<ORG>/musiceventfinder-config.git /tmp/config
           cd /tmp/config
           # Beispiel: Ersetze IMAGE_PLACEHOLDER in k8s/deployment.yaml
-          sed -i "s|ghcr.io/<ORG>/musiceventfinder:.*|ghcr.io/<ORG>/musiceventfinder:${GITHUB_SHA}|g" k8s/deployment.yaml
+          sed -i "s|ghcr.io/lauradubach/musiceventfinder:.*|ghcr.io/lauradubach/musiceventfinder:${GITHUB_SHA}|g" k8s/deployment.yaml
           git add k8s/deployment.yaml
           git commit -m "ci: bump image to $GITHUB_SHA"
           git push origin HEAD:main
